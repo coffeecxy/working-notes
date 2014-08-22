@@ -26,8 +26,15 @@ centos自带的是firefox浏览器，其版本也是较低的，我还是更加�
 ### 在grub中添加win7启动项目
 安装了centos后，grub会将MBR给覆盖了，导致启动的时候没有了win7的启动项（当然，在ubuntu中，安装的时候会grub会自动的在磁盘上面搜索windows安装项，或者是实用`update-grub`命令来找到windows安装）。在centos中，其没有提供这些功能，所以需要自己在`grub.cfg`中去添加启动项。
 
+```
+menuentry 'Windows 7 (loader) (on /dev/sda1)' {
+insmod ntfs
+set root=(hd0,1)
+chainloader +1
+}
+```
+注意这个是grub2，所以其语法是上面的。
 
-
-### 4.自动挂载windows下面的磁盘
-一般情况下，我们都会在电脑上同时按照
+### 自动挂载windows下面的磁盘
+一般情况下，我们都会在电脑上同时按照d的s说明l来a安zhuande
 
