@@ -11,14 +11,14 @@ linux有很多的发行版，我比较喜欢稳定的版本，所以选择使用
 
 ### grub4dos的u盘安装
 
-#### 1.制作grub4dos的U盘启动盘
+#### 制作grub4dos的U盘启动盘
 我不想使用刻录光盘的方式来安装，而是使用U盘安装，所以使用grub4dos，grub4dos可以将grub(1)安装在一个U盘中,具体的安装方法可以在网上看到，在安装grub4dos到U盘的时候，使用的是grubinst_gui2这个程序。安装了之后要将grub中的glrdr和menu.lst文件复制到U盘的根目录。
-#### 2.将centos的ISO解压
+#### 将centos的ISO解压
 将下载的ISO文件中的isolinux和liveOS两个目录解压到U盘根目录，同时将该ISO文件放到U盘根目录。此时U盘会有下面的文件。
 
 ![u盘根目录的样子](./ukeydir.png)
 
-#### 3.在menu.lst中添加启动项
+#### 在menu.lst中添加启动项
 在menu.lst中，需要如下的命令，在我安装的时候，大部分的时间都用在搜索怎么给出下面的命令了
 ```
 title install centos 7
@@ -37,6 +37,5 @@ initrd /isolinux/initrd0.img
 其中的`root=live:UUID=B4FE-5315`表示的是liveos在U盘下面，这个U盘的UUID是B4FE-5315，在windows下面，使用`vol`命令就可以得到了。其他的内核参数都是固定的。
 
 
----
 在完成了上面的设置之后，重新启动电脑，从U盘启动就可以进行centos的安装了。
 
