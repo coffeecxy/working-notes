@@ -17,3 +17,9 @@ centos自代了一个拼音输入法可以使用，但是在7中需要开启。
 在region and language >> input source 中找到 chinese(intelligent pinying),开启就可以了。
 
 但是使用之后，会发现其还是不能和windows下面的各种输入法相提并论。
+
+### 3.安装chrome浏览器
+centos自带的是firefox浏览器，其版本也是较低的，我还是更加喜欢chrome浏览器，但是现在google不能被访问，所以可以在windows下面将chrome的RPM包下载下来安装。
+
+`yum install xxx.rpm`就可以了。
+
