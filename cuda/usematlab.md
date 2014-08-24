@@ -9,6 +9,7 @@ matlab提供了mex命令来编译C/C++文件，其使用的是安装在系统上
 `mex -setup`
 
 可以看到
+
 ![](mexsetup.png)
 
 matlab会自动找到系统中安装的C/C++编译器。
@@ -35,4 +36,54 @@ matlab会自动找到系统中安装的C/C++编译器。
 
 ## 开始使用
 
-### 创建`gpuArray`
+### 初始化GPU
+GPU在被使用之前，需要进行初始化，matlab中有几个函数可以初始化一个gpu，其中最简单的就是使用`gpuDevice`，这句话执行了之后，默认的gpu会被选择到，如果其是第一次被选择到，那么其就会被初始化。
+
+### 在matlab和GPU中相互传递数据 
+一个算法有输入和输出，所以我们要将一个算法放到gpu中去运行，那么首先要将这个算法的输入放到gpu的global memory中去，在CUDA C API中，有专门的函数接口将C中的数据（存放在RAM中的）copy到GPU中去（GPU的显存），通用的，算法执行完了之后，又反过来copy。使用C代码，这两个调用过程还是比较复杂的。
+
+在matlab中，这个过程就比较简单了，只需要使用`gpuArray`和`gather`两个函数
+
+#### `gpuArray`
+`G = gpuArray(x)`
+
+其中x的数据类型是numeric（也就是基本的数据类型）
+
+````
+X = rand(10, 'single');
+G = gpuArray(X);
+````
+
+执行上面的代码后，在workspace中可以看到
+
+![](gpuarray.png)
+
+X的数据类型是single，其是存在于matlab中的（也就是RAM中，也就是JVM中）.
+
+G的数据类型是gpuArray,其是一个reference的数据类型，也就是说，其相当于一个指针，**其本身是存在于RAM中的，其指向的数据是存在于GPU中的（显存中）**。
+
+这个函数就完成了将数据从RAM传到显存中的功能。
+
+#### `gather`
+````
+X = gather(A)
+````
+
+完成的功能和gpuArray相反
+````
+gx = gather(G);
+````
+那么此时x和gx的内容就是完全一样的了。
+
+### 调用CUDA编写的核心算法
+当数据被传入了GPU之后，就可以调用CUDA C编写的核心算法了
+
+````
+x = ones(4,4,'gpuArray');
+y = mexGPUExample(x)
+````
+
+`y = mexGPUExample(x)`就是对算法的调用，可以看到，和传统的matlab调用C是完全相同的，这儿要注意的是，**传入的参数一定要是gpuArray,而不是其他的数据类型**，因为在mex函数中，一般的matlab数据的类型是`mxArray`，而存在GPU中的数据的类型是`mxGpuArray`。
+
+## matlab提供的GPU编程接口
+`mexGPUExample.cu`是一个CUDA程序，里面会使用到matlab提供的GPU编程接口。
