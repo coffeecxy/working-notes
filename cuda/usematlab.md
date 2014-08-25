@@ -1,12 +1,19 @@
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
 
 使用matlab来调用GPU进行并行运行
 ========
 
 我们使用cuda要完成的是通信系统中的并行算法研究，matlab中有很多的其他的函数，用这些函数可以很好的建立起算法运行的环境，然后matlab提供了MEX接口，这样可以用CUDA实现核心算法，然后用matlab来调用这个算法。
 
-## 环境建立
-matlab提供了mex命令来编译C/C++文件，其使用的是安装在系统上的C/C++编译器，所以，要使用MEX，那么首先要保证系统上面安装了C/C++编译器，在我使用的windows上面，安装了VS2012，在matlab中运行
+## 安装软件
+要完成这些功能，需要安装三个软件.
++ visual studio 2010
++ matlab 2014a
++ cuda SDK
+
+安装的时候最好按照上面给出的顺序来安装，特别是vs一定要安装2010版本，因为matlab 2014a的cuda mex的编译要使用到2010的VC。
+
+matlab提供了mex命令来编译C/C++文件，其使用的是安装在系统上的C/C++编译器，所以，要使用MEX，那么首先要保证系统上面安装了C/C++编译器
 
 `mex -setup`
 
@@ -19,7 +26,7 @@ matlab会自动找到系统中安装的C/C++编译器。
 但是要注意的是，上面找到的C/C++编译器是针对标准的C/C++使用的，在CUDA中，使用的是nvcc编译器，所以需要其他的设置
 
 ### mex使用nvcc编译器
-这儿是参考matlab的帮助文件，Parallel Computing Toolbox >> GPU Computing >> Run MEX-Functions Containing CUDA Code
+这儿是参考matlab的帮助文件，Parallel Computing Toolbox >> GPU Computing >> Run MEX-Functions Containing CUDA Code。
 
 这里只说一下要注意的地方，mex编译的时候，要使用nvcc，同时也要使用vc++，而且对vc++的版本也是有要求的。我使用的是matlab 2014a，最开始的时候安装的是vs2012(也就vs11),发现使用mex编译的时候找不到SDK，打开那个xml文件之后发现，其要使用的是vs10，也就是vs2010，所有又安装了vs2010.
 
@@ -32,9 +39,47 @@ matlab会自动找到系统中安装的C/C++编译器。
 
 要注意的是编译的时候要使用
 
-`mex -largeArrayDims mexGPUExample.cu`
+`mex -largeArrayDims -g mexGPUExample.cu`
 
 中间的-largeArrayDims是64位版本必须用的选项。
+-g选项是为了调试使用的。
+
+### visual studio中的设定
+交叉开发的时候，matlab端的代码在matlab中写，mex代码就在VS中写。
+
+在调试的时候，还要使用到VS来调试mex代码。
+
+在写mex代码的时候，我们可以不断的使用matlab的mex指令来编译，然后排除错误，但是更好的办法是在vs中完成编译工作。为了使得VS能编译通过，需要注意下面的设置。
+
++ 在VS中新建一个cuda工程，这样在编译的时候就会使用到nvcc和vc2010,可以看到，此时有一个`kernel.cu`文件,这个文件对我们没有用，因为我们不会连接，只会编译
+
++ 将我们的mex函数所在的.cu文件添加进来（使用添加已有项目）
+
+![](usematlab/cudapro.png)
+
+为了编译通过，必须将matlab的头文件加入搜索路径，也就是下面的两个文件
+```
+#include "mex.h"
+#include "gpu/mxGPUArray.h"
+```
+
+![](usematlab/vspro.png)
+
+这样在vs中，使用`Ctrl+F7`就可以完成编译了，如果有错误的话，那么就可以直接改。
+
+### visual studio调试mex文件
+程序写完了之后要要调试，matlab代码部分可以使用matlab自带的调试功能，mex文件部分可以使用手动pirintf的方式，但是这样很不方便。所以使用visual studio attach到matlab进程上面调试的方式。
+
+>要成功调试，一定要在编译的时候加上-g选项，我刚开始调试不成功，就是因为没有加-g选项来编译。
+
+步骤如下：
++ 在VS中，选择 调试 >> 附加到进程，选择matlab.exe
+![](usematlab/attach.png)
+
++ 在需要的地方加上断点，等待matlab调用到这个mex函数
+
++ matlab开始运行，在mex函数有断点的地方其会停下来。
+
 
 ## 开始使用
 
@@ -47,14 +92,15 @@ GPU在被使用之前，需要进行初始化，matlab中有几个函数可以�
 在matlab中，这个过程就比较简单了，只需要使用`gpuArray`和`gather`两个函数
 
 #### `gpuArray`
+
 `G = gpuArray(x)`
 
 其中x的数据类型是numeric（也就是基本的数据类型）
 
-````
+```
 X = rand(10, 'single');
 G = gpuArray(X);
-````
+```
 
 执行上面的代码后，在workspace中可以看到
 
@@ -67,23 +113,23 @@ G的数据类型是gpuArray,其是一个reference的数据类型，也就是说�
 这个函数就完成了将数据从RAM传到显存中的功能。
 
 #### `gather`
-````
+```
 X = gather(A)
-````
+```
 
 完成的功能和gpuArray相反
-````
+```
 gx = gather(G);
-````
+```
 那么此时x和gx的内容就是完全一样的了。
 
 ### 调用CUDA编写的核心算法
 当数据被传入了GPU之后，就可以调用CUDA C编写的核心算法了
 
-````
+```
 x = ones(4,4,'gpuArray');
 y = mexGPUExample(x)
-````
+```
 
 `y = mexGPUExample(x)`就是对算法的调用，可以看到，和传统的matlab调用C是完全相同的，这儿要注意的是，**传入的参数一定要是gpuArray,而不是其他的数据类型**，因为在mex函数中，一般的matlab数据的类型是`mxArray`，而存在GPU中的数据的类型是`mxGpuArray`。
 
@@ -94,10 +140,10 @@ y = mexGPUExample(x)
 
 下面是MEX的文件的标准定义，`mexFunction`为函数的名字，nlhs是返回的参数的个数，nrhs是传入的参数的个数,`mxArray *plhs[]`表示plhs是一个数组，其中的每个元素是一个mxArray*,mxArray数据类型是matlab中对数据的表示；同理，prhs也是一个数组，里面的元素每一个是一个const 指针，因为输入的参数不能被改变，所以加上了const
 
-````
+```
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, mxArray const *prhs[])
-````
+```
 ### API函数
 
 
@@ -134,14 +180,21 @@ mxGPUGetData得到的是可读写的。
 
 这儿提取出raw pointer，因为在CUDA C中调用kernel要使用raw pointer。
 
-#### mxGPUCreateGPUArray
-````
-mxGPUArray* mxGPUCreateGPUArray(mwSize const ndims,
-                                mwSize const * const dims,
-                                mxClassID const cid,
-                                mxComplexity const ccx,
-                                mxGPUInitialize const init0) 
-````								
+#### `mxGPUCreateGPUArray`
+
+函数原型
+
+```
+
+mxGPUArray* mxGPUCreateGPUArray
+(mwSize const ndims,
+mwSize const * const dims,
+mxClassID const cid,
+mxComplexity const ccx,
+mxGPUInitialize const init0)
+ 	
+```	
+
 在GPU中创建一个data，在CPU中创建一个gpuArray，让这个gpuArray指向那个data。
 
 后面的参数表示这个data的属性。
@@ -162,6 +215,7 @@ mxGPUArray* mxGPUCreateGPUArray(mwSize const ndims,
 
 #### `mwSize const * mxGPUGetDimensions(mxGPUArray const * const mgp)`
 得到mxGpuArray中每个维数的大小。
+
 #### `mwSize mxGPUGetNumberOfDimensions(mxGPUArray const * const mgp)`
 得到mxGpuArray的总的维数。
 
@@ -170,9 +224,25 @@ mxGPUArray* mxGPUCreateGPUArray(mwSize const ndims,
 
 从上面的两个函数得到的结果可以得到这个值。
 
+#### `mxArray* mxGPUCreateMxArrayOnGPU(mxGPUArray const * const mgp)`
+**将mxGpuArray变成一个mxArray**，用于返回到matlab。
 
-## 其他的
-### 怎么计算一个算法中需要多少个block
+在matlab中，观察workspace，会发现返回的数据的类型是gpuArray.
+GPU上面的data不会被改变。完成之后，原来的mxGpuArray就可以被删除了,因为其指向的东西有新的mxArray指向了。
 
-$N$
+#### `mxArray* mxGPUCreateMxArrayOnGPU(mxGPUArray const * const mgp)`
+把mxGpuArray中的GPU DATA copy到CPU中，函数完成的功能和gather类似。
+
+这样在返回到matlab中后，得到的是一个mxArray(指向的数据在RAM中)
+
+#### `void mxGPUDestroyGPUArray(mxGPUArray const * const mgp)`
+完成两件事情
++ CPU中删除mxGpuArray
++ 其指向的的gpu data如果没有其他的mxArray指向的话，就会被删除，如果还有其他的mxArray指向的话，就会被保留。
+
+这个函数一般在mex函数的最后要调用，因为其他的API函数会创建好些mxGPUArray,它们都指向了一个GPU DATA，在mex函数结束的时候，有些GPU DATA是不需要了的（比如中间需要的），有些还是需要的（就是作为输入输出的mxGPUArray对应的GPU DATA），这些输入输出的在mxGPUDestroyGPUArray的时候就不会从显存中删除掉。
+
+**所有的mxGPUArray在mex函数退出之前都要使用这个函数清除**
+
+
 
