@@ -1,3 +1,5 @@
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
 使用matlab来调用GPU进行并行运行
 ========
 
@@ -87,3 +89,90 @@ y = mexGPUExample(x)
 
 ## matlab提供的GPU编程接口
 `mexGPUExample.cu`是一个CUDA程序，里面会使用到matlab提供的GPU编程接口。
+
+通过matlab的帮助文件可以得到那些函数的用法。
+
+下面是MEX的文件的标准定义，`mexFunction`为函数的名字，nlhs是返回的参数的个数，nrhs是传入的参数的个数,`mxArray *plhs[]`表示plhs是一个数组，其中的每个元素是一个mxArray*,mxArray数据类型是matlab中对数据的表示；同理，prhs也是一个数组，里面的元素每一个是一个const 指针，因为输入的参数不能被改变，所以加上了const
+
+````
+void mexFunction(int nlhs, mxArray *plhs[],
+                 int nrhs, mxArray const *prhs[])
+````
+### API函数
+
+
+#### `int mxInitGPU()`
+
+初始化GPU，要注意的是，在使用其他的函数之前，必须先将GPU初始化，其实是初始化GPU 的runtime library。有几个地方可以初始化
+
+
++ Call mxInitGPU at the beginningof your MEX file before any CUDA code.
+
+
++ Call gpuDevice(deviceIndex) inMATLAB before running any MEX code.
+
+
++ Create a gpuArray inMATLAB before running any MEX code.
+
+#### `int mxIsGPUArray(mxArray const * const mp)`
+判断一个mxArray是不是mxGpuArray,从mexFunction的原型可以看出，传过来的数据是被声明成mxArray的，但是实际上其中包含可能是一个mxGpuArray。（注意这儿传入的都是指针，所以可以随便赋值，其真实指向的数据可能是matlab中的，也可能是gpu中的）
+
+#### `mxGPUArray const * mxGPUCreateFromMxArray(mxArray const * const mp)`
+#### `mxGPUArray* mxGPUCopyFromMxArray(mxArray const * const mp)`
+
+这两个函数实现的功能是相似的，都是要从已有的mxArray弄出一个mxGpuArray,
+
+mxGPUCreateFromMxArray中，如果mp已经是一个mxGpuArray，那么就新建一个mxGpuArray，其指向和mp相同的GPU data，如果其是一个mxArray，那么将这个数据赋值到GPU中，然后创建一个mxGpuArray,让其指向GPU中的那块数据。两种情况下得到的mxGpuArray都是只读的。
+
+mxGPUCopyFromMxArray中，如果mp是mxGpuArray，那么会将mp指向的gpu data复制一份，然后新建一个mxGpuArray，并让其指向该GPU data;如果是mxArray，那么将这个数据赋值到GPU中，然后创建一个mxGpuArray,让其指向GPU中的那块数据。两种情况下得到的mxGpuArray都是可读写的。
+
+#### `void const* mxGPUGetDataReadOnly(mxGPUArray const * const mgp)`
+#### `void* mxGPUGetData(mxGPUArray const * const mgp)`
+从mxGpuArray中得到一个raw pointer（就是C中使用的pointer），其指向了在GPU中的data(显存中的数据)。
+
+mxGPUGetData得到的是可读写的。
+
+这儿提取出raw pointer，因为在CUDA C中调用kernel要使用raw pointer。
+
+#### mxGPUCreateGPUArray
+````
+mxGPUArray* mxGPUCreateGPUArray(mwSize const ndims,
+                                mwSize const * const dims,
+                                mxClassID const cid,
+                                mxComplexity const ccx,
+                                mxGPUInitialize const init0) 
+````								
+在GPU中创建一个data，在CPU中创建一个gpuArray，让这个gpuArray指向那个data。
+
+后面的参数表示这个data的属性。
+
++ ndims是一个整数，表示其维数
++ dims是一个指针，表示每一维的大小。
+
+比如创建了3*4的矩阵那么ndims=2,dims[0]=3,dims[1]=4.
+
++ cid表示其class，mxClassID是一个enum,其每个域表示一个matlab中的class，比如mxDOUBLE_CLASS表示创建的时候double的。
+
++ ccx表示创建的是real还是complex的，mxComplexity是一个enum
++ init0表示是不是要初始化为全0
+
+这个函数创建的mxGpuArray一般是为了返回值的。
+
+
+
+#### `mwSize const * mxGPUGetDimensions(mxGPUArray const * const mgp)`
+得到mxGpuArray中每个维数的大小。
+#### `mwSize mxGPUGetNumberOfDimensions(mxGPUArray const * const mgp)`
+得到mxGpuArray的总的维数。
+
+#### `mwSize mxGPUGetNumberOfElements(mxGPUArray const * const mgp)`
+得到mxGpuArray中的总的元素的个数。
+
+从上面的两个函数得到的结果可以得到这个值。
+
+
+## 其他的
+### 怎么计算一个算法中需要多少个block
+
+$N$
+
