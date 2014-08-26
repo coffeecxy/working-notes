@@ -21,7 +21,7 @@ NVIDIA的显卡有三条不同的线。
 ### Kernel,Thread,block,grid
 在CPU中，处理任务的时候，我们会将各个任务变成一个函数，然后调用这个函数来完成这个任务，要特别注意的是，为了完成这个任务，这些函数同时都是被一个CPU调用的。
 
-在CODA中，使用相似的概念，但是我们需要完成一个任务的时候，都是使用并行的算法。所以C中的函数被扩展成了CUDA中的kernel,比如下面的定义，注意到前面的`__global__`，我们知道在标准C中，肯定是没有这个关键字的，但是CUDA的源程序也不是使用标准C编译器编译的，其使用的NVIDIA自己写的一个叫做NVCC的编译器，所以其是对标准C的一个扩展。
+在CUDA中，使用相似的概念，但是我们需要完成一个任务的时候，使用的是并行的算法。所以C中的函数被扩展成了CUDA中的kernel,比如下面的定义，注意到前面的`__global__`，我们知道在标准C中，肯定是没有这个关键字的，但是CUDA的源程序也不是使用标准C编译器编译的，其使用的NVIDIA自己写的一个叫做NVCC的编译器，所以其是对标准C的一个扩展。
 
 ```
 // Kernel definition
@@ -30,7 +30,9 @@ __global__ void VecAdd(float* A, float* B, float* C)
 int i = threadIdx.x;
 C[i] = A[i] + B[i];
 }
+```
 对于上面的这个kernel，需要使用下面的调用方法
+```
 int main()
 {
 ...
@@ -38,7 +40,7 @@ int main()
 VecAdd<<<1, N>>>(A, B, C);
 ...
 }
-````
+```
 
 可以看到，这个也是对C的一个扩展语法。`VecAdd <<<blocksPerGrid, threadsPerBlock>>>(A, B, C)`,<<< >>>中间的参数中的第一个是blocksPerGrid,表示在一个grid中有多少个block,而第二个参数threadsPerBlock表示在一个block中有多少个thread。
 
@@ -54,7 +56,7 @@ threadIdx为一个1维，2维，或者是3维的变量。要理解这个变量�
 
 上面的代码中，因为调用这个kernel的时候，传入的threadsPerBlock是一个int，也就是只给了一维的大小，所以就只需要threadIdx.x来定位到它。
 
-所以上面的代码的工作方式就好理解了，每个thread中的kernel运行的代码是一样的，但是因为threadIdx.x是不同的，这样它们就可以完成向量加法中的一个元素的。
+所以上面的代码的工作方式就好理解了，每个thread中的kernel运行的代码是一样的，但是因为threadIdx.x是不同的，这样它们就可以完成向量加法中的一个元素的。 
 【从上面可以得到一点点关于怎样使用GPU并行运行，我们首先要把我们想解决的问题给并行化，然后将并行化后的算法用到这些thread中去】
 
 但是应该架构和资源限制的原因，每个block中的thread的个数现在最多只有1024个。
@@ -62,6 +64,19 @@ threadIdx为一个1维，2维，或者是3维的变量。要理解这个变量�
 但是我们要处理的问题通常的规模都不是只有1024的，所以我们需要不止一个block。
 
 类似的，为了处理一个问题，这些block会被放到一个grid中，上面的参数blocksPerGrid就表示了为了处理这个问题所使用的一个grid中的block的数量【需要注意的是，一个GPU上面的block的数量肯定是有限的，所以一个grid中的block的数量是有界限的】。如果我们的问题中有好几个需要并行处理的算法，那么每个算法都需要有一个grid。
+
+
+### 异构的编程模型 Heterogeneous Programming
+
+![](yigou.png)
+ 
+在CUDA中，编程模型是异构的，也就是说，我们的GPU实际上是一个CPU的co-processor（协处理器）。在上图中的host就是CPU,而device就是GPU,一般情况下，C程序运行在CPU中，C程序要运行，那么就需要有memory，包括heap,stack,static,text之类的，这些都是从DRAM中分配到的（DRAM通过PCI总线和CPU连接起来的）。
+
+同样的，对于运行在thread中的kernel，我们知道stack是由其自己提供了的，但是global constant texture还是需要DRAM提供的（这个就是我们说的显存）。
+
+也就是说，对于一个应用程序，其有两块相互独立的内存空间，一块是HOST(CPU)的串行程序执行的时候要使用的，而在这块DRAM中进行内存分配和释放的操作通过C的API（比如说动态内存分配malloc）和C编译器自身（就是C的运行时）完成（比如说对stack，static的）。
+
+另外一块是CUDA程序运行时使用的global空间，在这个空间和中进行内存的分配和释放就完全需要我们自己调用cuda提供的API了，当然，kernel运行在thread中时的局部变量涉及到的内存分配和释放（相当于C中的stack）CUDA的运行时也是自己就完成了的。
 
 ### Memory 结构
 
@@ -75,24 +90,15 @@ threadIdx为一个1维，2维，或者是3维的变量。要理解这个变量�
 
 类似的，CUDA中有global memory，它们是被每个thread都可以访问得到的变量（实际上是thread中运行的kernel），在global memory中定义的变量，其lifetime为整个程序，也就是任何的kernel调用中都可以访问得到。
 
-### 异构的编程模型 Heterogeneous Programming
-
-![](yigou.png)
- 
-在CUDA中，编程模型是异构的，也就是说，我们的GPU实际上是一个CPU的co-processor（协处理器）。在上图中的host就是CPU,而device就是GPU,一般情况下，C程序运行在CPU中，C程序要运行，那么就需要有memory，包括heap,stack,static,text之类的，这些都是从DRAM中分配到的（DRAM通过PCI总线和CPU连接起来的）。
-
-同样的，对于运行在thread中的kernel，我们知道stack是由其自己提供了的，但是global constant texture还是需要DRAM提供的（这个就是我们说的显存）。
-
-也就是说，对于一个应用程序，在DRAM中，给其分配了两块相互独立的空间，一块是HOST(CPU)的串行程序执行的时候要使用的，而在这块DRAM中进行内存分配和释放的操作通过C的API（比如说动态内存分配malloc）和C编译器自身（就是C的运行时）完成（比如说对stack，static的）。另外一块是CUDA程序运行时使用的global空间，在这个空间和中进行内存的分配和释放就完全需要我们自己调用cuda提供的API了，当然，kernel运行在thread中时的局部变量涉及到的内存分配和释放（相当于C中的stack）CUDA的运行时也是自己就完成了的。
 
 ## 编程接口
 
 ### CUDA C RUNTIME
 
 CUDA的runtime（也就是提供cuda函数的一个library，要么是动态的DLL，要么是静态的lib）包含了很多的用于不同目的的函数接口,在下面的目录中
-````
+```
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin
-````
+```
 有如下的两个DLL文件，在程序被运行的时候，它们会被载入。
  
 其对应的lib文件在
@@ -110,13 +116,43 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\lib\x64
 
 Cudart_static.lib是使用静态链接的时候要使用的文件，比较大。
 
-### Runtime initialization
+#### Runtime initialization
 
 使用过其他库的都应该知道，要使用一个库的功能，这个库一般都会提供一个初始化函数，然后其他的所有函数都需要在调用了这个函数之后才被调用，当不使用这个库的功能了之后，然后要调用一个destroy函数来清除资源。
 
 Cudart这个库不需要显式的调用这样一个函数，当第一个cudart提供的函数被调用的时候，其会自动的被初始化。
 
 要注意的时候，初始化的时候每个device会被创建一个context，然后这个程序的所有的thread在访问这个device的时候都是用这个context。【这个和node-webkit中的情况有点类似，在nw中，每个页面都有一个js的context，但是Node 的context只有一个】
+
+
+#### 异步的并发执行 Asynchronous Concurrent Execution
+在host中的代码执行是串行的，然后在这些代码中，会有对kernel的调用，这样device就也要开始执行代码了。
+
+要注意的是，对于kernel的调用，其不是等到分配给device的代码运行完了才返回，而是在调用了之后的某个时刻就返回了。
+
+实际上，下面的情况的调用都是异步的。
+
++ 调用kernel
++ 在一个device中，进行memory copy
++ 从host copy数据到device，如果数据大小为64kb及以下
++ 在device中的memset函数
++ 以async开头的函数
+
+kernel的并行运行
+
+当一个device的
+`concurrentKernels`属性为1的时候，表示其支持同时运行几个kernel。意思是host在一个kernel还没有返回的时候，可以又发出一个kernel的调用，它们会同时运行。
+
+
+一个典型的情况是将一个kernel发送几次，这样就可以同时运行几个了。
+
+当然，我们需要使用一些同步的方法来让所有的thread
+
+
+
+
+
+
 
 ### Page_locked host memory
 我们知道在现代的操作系统中，为了更好的使用有限的内存服务于多个进程，所以将内存进行了分页,page。而 page_locked的host memory是强制的让OS将一块内存不进行分页然后给我们的应用使用。对于这个不分页的内存，在某些device中，可以使用一个叫做mapped momory的技术，让这部分内存和device的global memory完成一个双向的binding，这样的话就免去了先将host memory中的数据copy到device memory中，完成了算法之后又copy回来的这种操作。
@@ -125,9 +161,6 @@ Cudart这个库不需要显式的调用这样一个函数，当第一个cudart�
 
 在提供的API中，`cudaHostAlloc`和`cudaFreeHost`是用来完成page locked memory的操作的。
 
-### 异步的并发执行
-在host中的代码执行是串行的，然后在这些代码中，会有对kernel的调用，这样device就也要开始执行代码了。要注意的是，对于kernel的launch，其不是等到分配给device的代码运行完了才返回，而是在调用了之后的某个时刻就返回了。
-一个特例就是对于page locked memory，当其和device memory之间传输数据的时候，kernel在thread上面的执行也可以是同步进行的。
 
 ### Multi-device system
 为了增加运算能力，我们可以使用了GPU的阵列，这样在一个系统上面就有了多个device，使用下面的代码可以知道系统上面有多少个device。
@@ -217,11 +250,11 @@ Exclusive-process-and-thread: OS上只能有一个进程可以在这个device上
 
 比如下面的函数调用
 
-````
+```
 checkCudaErrors(cudaFuncSetCacheConfig(*func1,cudaFuncCachePreferShared));
 
 cudaError_t cudaFuncGetAttributes (cudaFuncAttributes *attr, const void *func)
-````
+```
 得到一个function的attribute，这个function也必须是一个__global__声明的，也就是一个kernel。cudaFuncAttributes这个struct中的各个域表示这个kernel的一些属性
 
 
@@ -238,8 +271,9 @@ cudaError_t cudaFuncGetAttributes (cudaFuncAttributes *attr, const void *func)
 
 这个函数会block直到分配到device上运行的任务都完成了。
 
+注意这个函数是在host中运行的，一个应用场景就是我们的算法由几步组成，其中的每一步都使用一个kernel来完成，那么在一个kernel调用之后，就使用cudaDeviceSynchronize,等待所有的thread完成，然后再调用下一个kernel。
+
+注意这个函数和`__syncthreads`的区别，`__syncthreads`是在kernel里面使用的，其表示这个kernel在各个thread中运行的时候，在某个点需要所有的thread都达到了才运行到后面去。
+
 在一个应用中，要提出的时候，我们通过都会先调用cudaDeviceSynchronize，等到所有任务都完成，然后调用cudaDeviceReset，这样这个应用（进程）在GPU上面申请的所有资源都会释放。
-````
-checkCudaErrors(cudaDeviceSynchronize());
-checkCudaErrors(cudaDeviceReset());
-````
+
