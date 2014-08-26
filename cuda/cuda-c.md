@@ -1,19 +1,5 @@
-Nvidia gpu computation
+CUDA的基本概念和 C API
 ====
-
-在并行计算里面，使用GPU进行并行计算是一个比较好的方向。
-Nvidia作为领先的独立显卡厂商，其从06开始推出的有cuda运算功能的各种显卡成为了并行计算领域的一个热点研究方向，而后有很多的算法都开发出了并行的运行的库。
-
-NVIDIA的显卡有三条不同的线。
-
-第一条就是Geforce，这个是我们经常用到的，因为其就是用于entertainment的，比如说高端的游戏玩家。
-
-第二条是Quadro，这个是专业GPU，也就是用在一些专业的电脑上，比如那些很强大的绘图软件需要强大的渲染功能，就会使用到。
-
-第三条是Tesla，这类GPU就是专们为了做并行运算为设计的，其并不是用于图形处理的，也就是其设计的初衷就不是为了用来做显卡，而是一个十分强大的并行处理平台，其一个很大的特点就是没有视频的输出接口。
-
-上面的三条线的产品只要支持CUDA运算，都可以用来进行CUDA并行运算。
-当然，它们的能力是从弱到强的。
 
 ## 编程模型
 由于GPU是天生的支持并行运算，其编程模型和我们对于CPU这种重控制的处理器的编程模型是很不一样的。
@@ -68,7 +54,7 @@ threadIdx为一个1维，2维，或者是3维的变量。要理解这个变量�
 
 ### 异构的编程模型 Heterogeneous Programming
 
-![](yigou.png)
+![](cuda-c/yigou.png)
  
 在CUDA中，编程模型是异构的，也就是说，我们的GPU实际上是一个CPU的co-processor（协处理器）。在上图中的host就是CPU,而device就是GPU,一般情况下，C程序运行在CPU中，C程序要运行，那么就需要有memory，包括heap,stack,static,text之类的，这些都是从DRAM中分配到的（DRAM通过PCI总线和CPU连接起来的）。
 
@@ -82,7 +68,7 @@ threadIdx为一个1维，2维，或者是3维的变量。要理解这个变量�
 
 下图表示的是CUDA中memory的结构。
 
-![](memory.png)
+![](cuda-c/memory.png)
 
 对于每一个thread，都有其local memory,然后对于一个block中的所以thread，有一个shared memory。这个地方要说一下关于kernel调用的问题了，我们知道，在C中，当调用一个函数的时候，会有一个stack建立（就是在现有的stack上面进行生长），函数中的所有的local variable都在这里面，当函数调用返回的时候，这个stack被撤销了。因为CUDA中的kernel实际上就是C中的函数一个扩展，那么，将一个kernel放到一个thread中去运行的时候，也必须有一个类似于stack的存储空间来放这个kernel执行所需要的局部变量的，这个就是local memory了。并行运算中每个thread之间需要进行通信，而这个通信就可以使用block shared memory。要注意的是，local memory和shared memory的life time（实际上其中存储的变量的life time）是相同的，也就是对于个kernel的调用结束之后，在调用这个kernel期间创建的局部变量和shared memory中创建的变量都没有了。这个和C中函数调用完了之后stack被撤销（局部变量不能再被访问）是一个意思。
  

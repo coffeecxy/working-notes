@@ -1,9 +1,9 @@
-关于bash的知识
+bash的使用
 ========
 
 bash是使用linux的人都会接触的东西，其要设置的内容也是比较复杂的。
 
-## 初始化
+## bash的初始化过程
 linux中的shell，分为login shell和non-login shell.根据这个分类，得到这个shell的时候，其环境变量是不同的。
 
 定义：
