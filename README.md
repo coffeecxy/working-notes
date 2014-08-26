@@ -7,7 +7,7 @@
 
 下面是分类
 
-[使用CUDA进行GPU的并行运算](cuda/cuda.md)
+[使用CUDA进行GPU的并行运算](cuda/index.md)
 
 [bash的使用](bash/bash.md)
 
