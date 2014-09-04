@@ -93,3 +93,14 @@ sudo systemctl stop firewall.service
 这个[百度经验](http://jingyan.baidu.com/article/adc815133476bdf723bf7393.html)基本已经说了怎么做了。
 
 我需要做的是将路由器的端口进行映射，使得20,21端口到centos主机。
+
+还需要关闭防火墙。
+
+还需要关闭selinx
+
+打开`/etc/selinux/config`文件
+  #SELINUX=enforcing     #注释掉
+  #SELINUXTYPE=targeted  #注释掉
+加上
+  SELINUX=disabled 
+重启电脑。
