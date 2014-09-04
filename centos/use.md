@@ -88,3 +88,8 @@ sudo systemctl disable firewall.service
 sudo systemctl stop firewall.service
 ```
 
+## 安装ftp服务器
+
+这个[百度经验](http://jingyan.baidu.com/article/adc815133476bdf723bf7393.html)基本已经说了怎么做了。
+
+我需要做的是将路由器的端口进行映射，使得20,21端口到centos主机。
