@@ -82,3 +82,9 @@ vnc会使用从590x[x=0-9]的这几个端口号，每使用`vncserver`打开一�
 
 其中的5902表示连接到第二个vncserver上面去。
 
+需要注意的是，要保证此时centos上的防火墙要么是关了的，要么是允许了相应的端口，为了简单，我直接关了防火墙。
+```
+sudo systemctl disable firewall.service
+sudo systemctl stop firewall.service
+```
+
