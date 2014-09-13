@@ -32,10 +32,11 @@ flex布局有两个基本的对象，一个是flex container，一个是flex ite
 规定盒子里面的东西的排列方向。
 
 ![](flex-direction1.svg)
-
-	.container {
-	  flex-direction: row | row-reverse | column | column-reverse;
-	}
+```css
+.container {
+	flex-direction: row | row-reverse | column | column-reverse;
+}
+```
 
 可以的四个方向都给出了了，
 
@@ -51,10 +52,11 @@ column和column-reverse相似的。
 上面说了，flex盒子是一个单向的盒子，这是因为默认的flex-wrap属性是nowrap.
 
 ![](flex-wrap.svg)
-
-	.container{
-	  flex-wrap: nowrap | wrap | wrap-reverse;
-	}
+```css
+.container{
+  flex-wrap: nowrap | wrap | wrap-reverse;
+}
+```
 
 nowrap说了，就是不会wrap，flex盒子中的所有元素必须放到一条线上。
 
@@ -86,10 +88,11 @@ justify-content规定了在main axis上，flex items是怎样排列的。
 同样的，在cross axis上面，也需要进行规定多出来的空间怎么处理。
 
 以row的direction为例，因为放在一条线上面的flex items的height各不相同，height最大的将flex的高度全部占据了，那么对于其他的items，在竖直方向，都有了剩余的空间。
-	
-	.container {
-	  align-items: flex-start | flex-end | center | baseline | stretch;
-	}
+```css	
+.container {
+  align-items: flex-start | flex-end | center | baseline | stretch;
+}
+```
 
 * flex-start，margin,border,padding都不变，将这些items放在最上面。
 * flex-end,margin,border,padding都不变，就是将这些items放到最下面。
@@ -105,13 +108,14 @@ justify-content规定了在main axis上，flex items是怎样排列的。
 但是，我们可以人为的改变其order值，从而让其出现的位置为放进去的时候不一样。
 
 ![](order.svg)
-
-	.item {
-	  order: <integer>;
-	}
+```css
+.item {
+  order: <integer>;
+}
+```
 比如在下的代码中
 
-```
+```html
 <div  layout horizontal>	
 	<span >
 		first one
@@ -133,7 +137,7 @@ justify-content规定了在main axis上，flex items是怎样排列的。
 
 但是如果改成下面的代码
 
-```
+```html
 <div  layout horizontal>	
 	<span style="order: 2;">
 		first one
@@ -164,13 +168,13 @@ flex-grow的处理方法是，将当前的item的width（height）变大来填�
 
 ![](flex-grow.svg)
 
-```
+```css
 .item {
   flex-grow: <number>; /* default 0 */
 }
 ```
 设置的值是一个比值，比如
-```
+```html
 <div  layout horizontal>	
 	<span style="flex-grow: 0;">
 		first one 
@@ -190,10 +194,11 @@ flex-grow的处理方法是，将当前的item的width（height）变大来填�
 
 #### flex-shrink
 shrink是缩小的意思，所以其设置的属性表示当窗口（浏览器的窗口）缩小导致flex box的width（height）变小的时候，如果必须的话，这个元素的width变小的幅度。
-
-	.item {
-	  flex-shrink: <number>; /* default 1 */
-	}
+```css
+.item {
+  flex-shrink: <number>; /* default 1 */
+}
+```
 默认值是1，表示所有的元素按照等幅度的变小自己的width。
 
 一个典型的应用就是将flex-shrink设置为0，这样的话，这个item就不会变小自己的width
