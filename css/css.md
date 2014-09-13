@@ -154,5 +154,61 @@ justify-content规定了在main axis上，flex items是怎样排列的。
 它们出现的顺序就是按照order和出现的先后顺序给出的，首先按照order排，如果order相同，则按照出现的顺序排。
 
 #### flex-grow
+这个属性和前面container的 justify-content是有关系的。因为它们都是说的是如果在main axis上面有剩余的空间要怎么处理的问题。
+
+justify-content表示的是，我不动每一个item的大小，只是将它们以不同间隔分布放到main axis上面。
+
+flex-grow的处理方法是，将当前的item的width（height）变大来填充满剩余的空间。
+
+所以这两个属性是冲突的，当同时出现的时候，flex-grow占优，也就是justify-content的设置不再有效。
 
 ![](flex-grow.svg)
+
+```
+.item {
+  flex-grow: <number>; /* default 0 */
+}
+```
+设置的值是一个比值，比如
+```
+<div  layout horizontal>	
+	<span style="flex-grow: 0;">
+		first one 
+	</span>
+	<span style="flex-grow: 2;">
+		second one
+	</span>
+	<span style="flex-grow: 1;">
+		third one
+	</span>
+	<span style="flex-grow: 3;">
+		fourth one
+	</span>
+</div>
+```
+那么对于所有的剩余的空间，first one的width不变，second,third,fourth的width会增加，增加的值按照2:1:3的比例将剩余的空间分掉。
+
+#### flex-shrink
+shrink是缩小的意思，所以其设置的属性表示当窗口（浏览器的窗口）缩小导致flex box的width（height）变小的时候，如果必须的话，这个元素的width变小的幅度。
+
+	.item {
+	  flex-shrink: <number>; /* default 1 */
+	}
+默认值是1，表示所有的元素按照等幅度的变小自己的width。
+
+一个典型的应用就是将flex-shrink设置为0，这样的话，这个item就不会变小自己的width
+
+```html
+<span style="flex-grow: 0;flex-shrink: 0;">
+	first one 
+</span>
+<span style="flex-grow: 2;flex-shrink: 1;">
+	second one
+</span>
+<span style="flex-grow: 1;flex-shrink: 2;">
+	third one
+</span>
+<span style="flex-grow: 3;flex-shrink: 3;">
+	fourth one fourth onefourth one
+</span>
+```
