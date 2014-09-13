@@ -217,3 +217,6 @@ shrink是缩小的意思，所以其设置的属性表示当窗口（浏览器�
 	fourth one fourth onefourth one
 </span>
 ```
+在上面的例子中，first one因为flex-shrink为0，所以不管窗口怎么变小，其width都不会改变，也就是其不会wrap，其他的都会wrap。
+
+如果将它们四个的flex-shrink都设置为0，那么它们的width都不会变化了。
