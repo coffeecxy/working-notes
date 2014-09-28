@@ -24,6 +24,8 @@ NVIDIA的显卡有三条不同的线。
 
 [matlab调用CUDA(mex)](matlab-cuda.md)
 
+[编程的时候要注意的地方](attention.md)
+
 
 
 
