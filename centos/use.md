@@ -82,3 +82,25 @@ vnc会使用从590x[x=0-9]的这几个端口号，每使用`vncserver`打开一�
 
 其中的5902表示连接到第二个vncserver上面去。
 
+需要注意的是，要保证此时centos上的防火墙要么是关了的，要么是允许了相应的端口，为了简单，我直接关了防火墙。
+```
+sudo systemctl disable firewall.service
+sudo systemctl stop firewall.service
+```
+
+## 安装ftp服务器
+
+这个[百度经验](http://jingyan.baidu.com/article/adc815133476bdf723bf7393.html)基本已经说了怎么做了。
+
+我需要做的是将路由器的端口进行映射，使得20,21端口到centos主机。
+
+还需要关闭防火墙。
+
+还需要关闭selinx
+
+打开`/etc/selinux/config`文件
+  #SELINUX=enforcing     #注释掉
+  #SELINUXTYPE=targeted  #注释掉
+加上
+  SELINUX=disabled 
+重启电脑。
