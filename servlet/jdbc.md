@@ -55,3 +55,26 @@ public void destroy() {
     }
 }
 ```
+
+### transaction
+在前面说的所有的query操作使用的都是JDBC默认commit方式，也就是auto commit，意思是执行完了一条SQL之后，结果马上就被数据库写到了硬盘里面，也就是每个query函数都是立即执行的。
+
+如果我们运行的都是`SELECT`语句，这个是没有问题的，但是比如我们做的是一个银行系统，现在一个账户想转账到另外一个账户，完成这个转账需要两步
+* 从第一个账户中扣除一定金额
+* 给另外一个账户加入一定的金额
+如果这两步都安全的完成了，那么就好了，但是如果第一步完成了，但是做第二步的时候出现了问题，那么肯定是**不行的**。我们想要到达的效果是，这两步要么都执行了，要么都没有执行，因为只有这样，数据库才是处于**有效**的状态。
+
+这个就是transaction的概念。就是将几条SQL语句打包成一个整体，让其看起来就像是一条语句，如果所有都执行成功了，那么就算commit了，如果有任何一条没有执行成功，那么就需要被`rollback`。
+
+JDBC默认是auto commit的，也就是不是transaction的，执行
+
+	// Turn on transactions
+      con.setAutoCommit(false);
+那么就可以变成transaction的了，因为关掉了auto commit之后，我们必须调用`con.commit();`才可以将前面的所有SQL语句的结果写入硬盘。而如果有任何错误的话，都可以在`catch`语句中使用`con.rollback();`还原到上一次commit的地方。
+
+**当使用了transaction之后，connect就不能被多个request共用了**,因为如果共用的话，`con.commit();`随时可能被调用，根本就达不到transaction的效果。
+
+那么使用transaction的话，又回到了开始的问题了，每个request都必须使用一个`Connection`，那么就根本没有这么多`Connection`可以使用。对于一般的中型的数据库来说，可以同时使用的`Connection`的数目是`100`个左右，而对于小型的数据库，比如`Microsoft Accesss`，可以同时有的连接只有10个以内。
+
+#### connection pool
+解决这个问题的一个办法就是使用connection pool,就是在一个servlet初始化的时候，建立一定数量的`Connection`，当来了一个request的时候，从这个pool中找出一个没有被使用的`Connection`给其使用，处理完这个request之后，将这个`Connection`还回到这个pool中，这是一个比较高效的使用connection的方式。但是要自己实现起来还是比较复杂，书上有一个很简单版本的，但是不能用在工程中，如果真的要使用的话可以用第三方库。
