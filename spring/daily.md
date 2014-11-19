@@ -1,7 +1,7 @@
 DIALY
 ====
 
-### 2014年11月17日
+## 2014年11月17日
 
 #### maven
 使用maven的时间还不是很长，有些问题还是要记一下。
@@ -195,7 +195,7 @@ public class GreetingController {
 ##### @JsonView
 这个使用了jackson的json处理，Java有很多的处理json的库，但是jackson是用的很多的，这儿需要对jackson有一定的了解，**？？？？**
 
-### 2014年11月18日
+## 2014年11月18日
 
 #### view和view resolver
 作为MVC中的view，在spring中实现的时候有两个重要的interface，`View`和`ViewResolver`，`ViewResolver`将给出的`view`的名字（string）解析成一个view，而`view`负责使用一种view technology生成输出到浏览器的内容。
@@ -327,26 +327,96 @@ public class MyExceptionController {
 对于`handleTheException`函数，其接收的输入和输出参数与使用`@RequestMapping`函数可以使用输入和输出参数是类似的。
 在这个代码中，返回了一个String，那么就是view的name，其会被viewResolver解释成一个JSP文件的名字。
 
-### 打开spring输出的DEBUG信息
-为了输出spring在做的每一步的详细，需要使用`log4j`，首先在`pom.xml`文件中添加
+### Convention over configuration-默认优于配置
+在各种语言的各种framework中，基本上都会遵循这个规定。
+如果默认的配置已经足够好了，那么需要写的代码就会更少就可以完成相应做的事情。
+在spring mvc中，同样也遵循了这个准则。
 
-    <!--log4j-->
-    <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.17</version>
-    </dependency>
+#### ControllerClassNameHandlerMapping
+这个类用来将一个controller映射到一个URL的处理上面，默认情况下，其是没有被DispatcherServlet使用的。
+如果要使用，那么需要配置
+
+	<bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
+
+
+```
+@Controller
+public class HelloController {
+}
+```
+
+对于上面的类，其就会将`/hello*`映射到该controller来处理。其映射的规则就是将从类名中将Controller去掉，然后将所有的字母都变成小写的。
+
+
+
+### DispatcherServlet默认使用的HandlerMapping
+
+
+	org.springframework.web.servlet.HandlerMapping=org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,\
+	org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping
 	
-这样IDEA就可以直接从maven中下载apache log4j包了。
+如上，在DispatcherServlet的配置文件中，其配置了使用`BeanNameUrlHandlerMapping`和`DefaultAnnotationHandlerMapping`两个`HandlerMapping`。
+如果我们不使用其他的`HandlerMapping`，那么所有的HandlerMapping都由这两个来完成。
 
-然后需要配置log4j
+`BeanNameUrlHandlerMapping`映射URL的方式为如果bean name为`/aa*`的形式，也就是如果其name(id)属性为以`/`开头的，那么其就会被直接映射了。
 
-新建`\src\main\resources\log4j.properties`文件，向文件中写入如下的内容，
+`DefaultAnnotationHandlerMapping`表示当我们在一个Controller的type或者是method上面使用了。
 
-	log4j.rootLogger=DEBUG, A1
-	log4j.appender.A1=org.apache.log4j.ConsoleAppender
-	log4j.appender.A1.layout=org.apache.log4j.PatternLayout
-	log4j.appender.A1.layout.ConversionPattern=%-4r %-5p [%t] %37c %3x - %m%n
+当在同一个Controller上同时使用两个方法的时候(就是当@Controller里面给出了bean的name开头为`/`)，**一般都会出现问题**，所以不推荐这样使用。
 
-上面的内容使用了`properties`文件的语法，具体的信息要看log4j的文档。
-需要特别注意的是第一句`log4j.rootLogger=DEBUG, A1`，其表示要输出的信息的级别，默认的是`INFO`，就是在IDEA中可以看到的信息前面都有`INFO`,这里将其改成了`DEBUG`，所以就可以看到所有的DEBUG信息了。
+比较好的使用方法，不要使用`BeanNameUrlHandlerMapping`提供的功能，因为如果只是在controller的type上面使用`@Controller`，那么生成的bean的name就是将这个class的第一个字母变成小写的。
+
+	@Controller
+	@RequestMapping("/user")
+	public class UserController {
+	    @RequestMapping("/get")
+	    public User getUser() {
+	        return new User("cxy","cxy");
+	    }
+	}
+
+比如上的代码，会生成一个`userController`的bean，因为这个`bean name`没有以`/`开头，所以其不能映射到任何的URL。
+就只是用`DefaultAnnotationHandlerMapping`提供的功能，这样我们就需要在Controller的type和需要处理request的method上面使用`@RequestMapping`。
+
+在spring中，实际上实现了其他的`HandlerMapping`，但是一般情况下我们都不会使用，而是只会使用上面提到的两个。比如上面提到的`ControllerClassNameHandlerMapping`就一般不会使用。
+
+## 2014年11月19日
+### ModelMap & ModelAndView
+在spring mvc中的model实际上使用的是一个`Map<String,Object>`,其存放了在一个要用view来显示的k/v对。
+使用的时候，可以使用`ModelMap`或者是`ModelAndView`。
+
+`ModelMap`不同于`Map<String,Object>`的地方时，其可以根据加入的attribute自己推断出其key的名字。比如加入了一个`x.y.User`，那么其名字就会自动推断为`user`。当然使用的时候最好还是把key给出来，不然还是不够直观的。
+
+一个handler处理完了一个request之后,需要返回一个view，要么返回的是一个string，也就是这个view的logic name,这样的话就需要`ViewResolver`来找到真的view,要么返回的是一个`View`,这样这个view就可以直接使用了。
+
+当在handler中使用`ModelMap`的作为输入参数，我们可以在返回参数的地方返回一个string或者是view。
+
+为了方便，spring提供另外一个选择，我们可以直接使用`ModelAndView`，其就是一个结合体，结合了`ModelMap`和`View`，其中`View`定义成了一个`Object`，这样可以放进去一个`String`，也可以放进去一个`View`，而`ModelMap`就用来存放我们要存放的`Model`数据。
+
+```java
+public class DisplayShoppingCartController implements Controller {
+
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
+
+        List cartItems = // get a List of CartItem objects
+        User user = // get the User doing the shopping
+
+        ModelAndView mav = new ModelAndView("displayShoppingCart"); <-- the logical view name
+
+        mav.addObject(cartItems); <-- look ma, no name, just the object
+        mav.addObject(user); <-- and again ma!
+
+        return mav;
+    }
+}
+```
+
+比如上面的代码，新建`ModelAndView`的时候就指定了View的logic name，然后向ModelMap中填入数据。
+
+### RequestToViewNameTranslator
+`RequestToViewNameTranslator`是`DispatcherServlet`默认会定义的一个bean。
+其完成的事情就是当一个handler没有返回一个view或者是logical view name的时候，其会生成一个logical view name。
+
+其相应的配置在文档中有。
+但是在实际的使用中，我还是喜欢自己指定view或者是view name,这样就不用去猜测和看文档来确定到底会使用哪个View。毕竟用的代码也没有几句。 
+
