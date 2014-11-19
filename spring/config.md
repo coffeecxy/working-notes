@@ -27,4 +27,5 @@ spring的一些配置
 
 ## 2014年11月19日12:31:23
 ### `xxx-servlet.xml`和`@Configuration`
-Spring mvc需要配置
+Spring mvc需要配置。
+一般的，在servlet container提供的
