@@ -56,29 +56,30 @@ SQL代码
 	
 `Skill`也是一样的。
 
-	@Entity
-	public class Ranking {
-	    @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
-	
-	    @Column
-	    private Integer ranking;
-	
-	    @ManyToOne
-	    private Person subject;
-	    // manytoone表示ranking和person是n:1的关系
-	    // subject是Ranking表中的一列，这一列中会有很多行的值是相同的，所以是n:1
-	    // 生成的sql代码是
-	    // foreign key (subject_id) references Person (id)
-	
-	    @ManyToOne
-	    private Person observer;
-	
-	    @ManyToOne
-	    private Skill skill;
-	}
+```java
+@Entity
+public class Ranking {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column
+    private Integer ranking;
+
+    @ManyToOne
+    private Person subject;
+    // manytoone表示ranking和person是n:1的关系
+    // subject是Ranking表中的一列，这一列中会有很多行的值是相同的，所以是n:1
+    // 生成的sql代码是
+    // foreign key (subject_id) references Person (id)
+
+    @ManyToOne
+    private Person observer;
+
+    @ManyToOne
+    private Skill skill;
+}
+```
 `Ranking`比较复杂一些了。其中`subject`,`observer`,`skill`都是`ManyToOne`的，这个意思就是说在`Ranking`这个表中的`subject`这一列，其很多个值都可以是`Person`中的一个值。`subject`表示被评价的人，当然同一个人可以被多个人评价了。同理，`observer`和`skill`也是这样的。
 
 SQL代码
