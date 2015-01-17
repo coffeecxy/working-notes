@@ -41,4 +41,5 @@ name参数是service的名字，$getFn参数就是$get 对应的function，也�
 在service中，constructor参数是一个constructor function，**也就是要使用new来例化得到一个service。**
 
 
-
+## Module
+在ja中，所有的东西如果没有加上一个命名空间的话，那么就会全部被放在global中，所以angular提出了一个module的东西，使用module再配合$injector就可以把我们的东西整理的很好了。

@@ -510,3 +510,69 @@ create table CPKBook (
 
 ### @Column
 对于Entity中的每一个域，可以使用@Column来标注其生成的列的属性。反应到sql上就是对这些列加上各种constraint。比如说not null，unique之类的，看其文档就可以知道了。
+
+### HQL的常用的语法
+HQL和SQL的用处是一样的，都是用来操作数据库的，但是SQL是直接用来操作数据库的，其面向的是关系，而HQL是面向对象的一种查询语言。
+使用HQL是用来操作entity中的entities的。
+主要的操作有update,delete,insert,select这四个。
+
+#### update
+	UPDATE [VERSIONED]
+	 [FROM] path [[AS] alias] [, ...]
+	 SET property = value [, ...]
+	 [WHERE logicalExpression]
+
+update的语法如上，其和sql的update是类似的。
+上面的语法中，[]中表示的是可选的，`,...`表示可以有多个重复的。
+
+	Query query=session.createQuery("update Person set creditscore=:creditscore where name=:name");
+	query.setInteger("creditscore", 612);
+	query.setString("name", "John Q. Public");
+	int modifications=query.executeUpdate();
+
+语法中的`path`表示的是要更新的entity，`set`就是要更新的property的k/v对。使用`where`来限定要更新的Entity要满足的条件，如果没有where的话，所有的Entity都会被更新，就像sql中的update不使用where会更新所有的行一样。
+
+#### delete
+```hql
+DELETE
+ [FROM] path [[AS] alias]
+ [WHERE logicalExpression]
+```
+delete用来删除一个entity，其中的`where`也还是用来限制要删除的entity应该满足的条件。
+```java		
+Query query=session.createQuery("delete from Person where accountstatus=:status");
+query.setString("status", "purged");
+int rowsDeleted=query.executeUpdate();
+```
+#### insert
+	INSERT
+	 INTO path ( property [, ...])
+	 select
+
+insert使用的时候需要和select一起使用。其用的并不是很多，因为要向数据库中加入一个entity，可以使用将这个object变成persistent的方法，而且那种方法更加直观好用。
+
+#### select
+select就使用数据库中得到一些满足条件的Entity。
+其应该是用得最多的一个hql语句了。
+
+	[SELECT [DISTINCT] property [, ...]]
+	 FROM path [[AS] alias] [, ...] [FETCH ALL PROPERTIES]
+	 WHERE logicalExpression
+	 GROUP BY property [, ...]
+	 HAVING logicalExpression
+	 ORDER BY property [ASC | DESC] [, ...]
+	
+要注意的是，在select语句中,`select`这个关键字都是可以省略的，以为`select`是用得最多的语句，所以其才这样设计。
+后面的几个语句和sql中的类似，都是用来限制选择出来的object要满足的条件，或者是排列选择出来的object。
+
+在使用sql的时候，我们经常会使用`limit`来限制从数据库取回的数据的行数。
+在mysql中，limit的语法为`limit m,n`，`m`表示从哪一条开始取，第一条的下标是`0`,`n`表示总共要取多少行。
+如果使用的是`limit n`，也就是只是指名了要取多少行，那么此时的`m`就是`0`.
+
+在Hibernate中，需要调用函数完成上面的事情，而不是直接在hql中写。
+
+    Query query = session.createQuery("from Product p ");
+    query.setFirstResult(1);
+    query.setMaxResults(2);
+	
+如果上的setFirstResult和setMaxResults的组合就是`limit 1,2`
