@@ -213,3 +213,16 @@ RestTemplate提供了一个更加高层次的来调用6个主要的http method�
 		this.messageConverters.add(new ResourceHttpMessageConverter());
 		this.messageConverters.add(new SourceHttpMessageConverter<Source>());
 		this.messageConverters.add(new AllEncompassingFormHttpMessageConverter());
+		
+
+
+#### FormHttpMessageConverter
+
+HttpMessageConverter做的事情是针对http request和http response的body的，对于FormHttpMessageConverter，其可以处理的media type为
+application/x-www-form-urlencoded(可以进行读写操作)和 multipart/form-data(只能进行写操作)
+
+其类的定义如下
+
+	public class FormHttpMessageConverter implements HttpMessageConverter<MultiValueMap<String, ?>> {
+
+可以看出，这个converter完成的事情就是将一个java中的MultiValueMap<String, ?>和media type为上面两种的进行转换。具体的，在http request中，一个MultiValueMap<String, ?>的java object会被转成http request中对应的字符串表示，而在response中，得到
