@@ -166,6 +166,8 @@ DefaultServlet本身是用来进行静态的文件输出的，如果我们还想
 
 ## ContentNegotiatingViewResolver
 
+[这个网站](http://websystique.com/springmvc/spring-4-mvc-contentnegotiatingviewresolver-example/)给出了一个很好的例子。
+
 在spring中，一般来说，要完成一个功能，都是有很多的方法的，找到一种适合于自己的方法就可以了。
 
 在viewResovler中一个比较特殊的是ContentNegotiatingViewResolver,其核心的思想是，对于同一个资源
