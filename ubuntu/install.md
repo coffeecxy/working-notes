@@ -1,18 +1,22 @@
 使用需要注意的事情
 ====
 
-## 字体渲染
-在ubuntu中,字体的渲染本来还是可以的,但是还是有一些问题,所以我们一般还是会使用其他的一些增强渲染技术来达到更加理想的字体渲染,这样看起来会舒服很多.
+## 一般的字体渲染和openjdk中的字体渲染
+在ubuntu中,字体的渲染本来还是可以的,但是还是有一些问题,所以我们一般还是会使用其他的
+一些增强渲染技术来达到更加理想的字体渲染,这样看起来会舒服很多.
 
 一般的,我们都会使用infinality这技术.
 
-[https://github.com/achaphiv/ppa-fonts/blob/master/ppa/README.md](这个连接)下面详细的介绍了怎么进行安装.
+[https://github.com/achaphiv/ppa-fonts/blob/master/ppa/README.md](这个连接)
+下面详细的介绍了怎么进行安装. 实际上,在这个github中,作者同时给出了在ubuntu 14.04中
+对一般的字体渲染和对openjdk中的swing应用的字体渲染的东西
 
+### 字体渲染
 安装的时候需要使用PPA
 
-	sudo add-apt-repository ppa:no1wantdthisname/ppa
-	sudo apt-get update
-	sudo apt-get upgrade
+	sudo add-apt-repository ppa:no1wantdthisname/ppa && \
+	sudo apt-get update && \
+	sudo apt-get upgrade && \
 	sudo apt-get install fontconfig-infinality
 
 安装完成之后需要选择渲染的模式:
@@ -23,16 +27,36 @@
 
 有好几种模式,我选择的是`osx2`,也就是第`5个`.
 
-在上面的链接给出的方法中,其还说了改变`/etc/profile.d/infinality-settings.sh`中的`USE_STYLE`变量,但是我发现不用改变也是可以的.直接使用其给出的`DEFAULT`值就可以了.
+在上面的链接给出的方法中,其还说了改变`/etc/profile.d/infinality-settings.sh`中的
+`USE_STYLE`变量,但是我发现不用改变也是可以的.直接使用其给出的`DEFAULT`值就可以了.
 
 而第三个是改变gnome下面的应用的hinting/antialiasing的,因为我使用的是kde,所以就不用设置了.
 
 完成之后,注销并重新登录就可以了.
+### openjdk中的字体渲染
+	sudo add-apt-repository ppa:no1wantdthisname/openjdk-fontfix && \
+	sudo apt-get update && \
+	sudo apt-get install openjdk-7-jdk
+
+同样的使用了上面的那个ppa,注意后面安装的时候,会发现安装比较慢,因为不是使用的ubuntu的
+官方源,而是使用的这个ppa了.
+
+### 安装cion
+在linux中以前没有一个好的C/C++ IDE,不过现在IDEA出了一个clion,现在已经是1.0版本了,在其EAP
+的时候使用过,发现还是很好用的.
+
+clion需要使用jre来运行,官方提供的clion包中,自己是包含了一个jre的,其使用的是clion.sh这个
+脚本来启动clion,在里面又一个部分就是找到系统中一个JDK,如果没有设置一些环境变量的话,就会
+使用自带的那个jre,所以在寻找JDK代码的后面加上下面的代码,这样就能保证总是使用我们上面安装的
+打了字体patch的JDK.
+
+	# 使用我们自己安装的对字体渲染进行了patch的jdk
+	JDK="/usr/lib/jvm/java-7-openjdk-amd64"
+
+重新启动之后,会发现clion的字体漂亮了很多.
 
 ## 安装搜狗拼音输入法
 现在搜狗拼音输入法只有ubuntu下面才有，这个也是我使用ubuntu的一个原因。
-
-
 
 在安装之前,要将系统中现在存在的输入法全部删除了,不然安装好了之后一般都会有一些问题.
 
@@ -43,9 +67,9 @@
 
 现在搜狗支持的是ubuntu 12.04和14.04这两个LTS版本,直接到搜狗的官网去下载相应的deb安装包.
 使用
-	
+
 	gdebi sogoupinyin_1.2.0.0042_amd64.deb
-	
+
 来安装这个deb文件,因为`gdebi`可以安装其依赖的package.
 
 安装完成之后再重启,一般就可以了.
@@ -71,12 +95,12 @@ orcale官方只提供了rpm安装包，Ubuntu要使用的deb的安装包，不�
 	sudo add-apt-repository ppa:webupd8team/java
 	sudo apt-get update
 	sudo apt-get install oracle-java8-installer
-	
+
 ## tomcat7使用Orcale jdk
 
 在安装了orcale jdk之后，如果启动tomcat7，其会提示`JAVA_HOME`没有设置，在`/etc/init.d/tomcat7`文件中，将`JDK_DIRS`中改为如下的
 
 
 	JDK_DIRS="/usr/lib/jvm/default-java ${OPENJDKS} /usr/lib/jvm/java-6-openjdk /usr/lib/jvm/java-6-sun /usr/lib/jvm/java-7-oracle /usr/lib/jvm/java-8-oracle"
-	
+
 也就是这个启动脚本默认没有搜索orcale jdk 8的路径，加上之后就可以了。

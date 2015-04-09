@@ -97,14 +97,17 @@ RUN echo "deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted
 
 > 因为这个修改还是比较麻烦的,我将自己修改过的Dockerfile又push到了自己的github上面.
 
-### 编译过程的原理分析
+## 在本地使用Makefile编译docker
 
-在这个路径下面,有一个Makefile,docker使用make来完成生成镜像的工作.
-其在build的时候,使用的是这个目录下面的Dockerfil文件. 
+上面在本机上安装了一个稳定的docker,并且成功的修改了Dockerfile的内容,
+下面开始在外部生成开发容器`docker:master`并且在开发容器中编译生成一个docker.
+
+在当前路径下面,有一个Makefile,本机上面的稳定的docker使用make来完成生成镜像的工作.
+
 运行命令
 
-	~/code/docker$ sudo make --debug
-make的时候使用的是默认的配置.
+	make --debug
+那么,make会生成默认的target,其为binary.
 
 	default: binary
 
@@ -114,7 +117,7 @@ make的时候使用的是默认的配置.
 	build: bundles
 		docker build -t "$(DOCKER_IMAGE)" .
 
-默认是要编译一个binary这个target,其依赖于build,再依赖于bundles.
+binary依赖于build,再依赖于bundles.
 其中`$(DOCKER_IMAGE)`是`docker:master`
 
 `$(DOCKER_RUN_DOCKER)`的值是
@@ -124,6 +127,7 @@ make的时候使用的是默认的配置.
 其意思为,在成功的编译好了`docker:master`这个镜像之后,要启动这个镜像,在其中运行
 	
 	hack/make.sh binary
+	
 要特别注意的是其中的`-v`选项,这儿只是将docker目录下的bundles给映射了. 因为编译生成的docker可执行文件
 会被放在docker/bundles这个文件夹下面.
 
@@ -141,8 +145,25 @@ make的时候使用的是默认的配置.
 	# 从另外一个终端中进入容器
 	alias docker-shell='docker exec -it docker-master /bin/bash'
 	
+## 在开发容器内容手动编译docker
 
+上面介绍的是在本地,通过目录下面的Makefile,使用make命令来在容器内编译得到一个docker可执行文件.
 
-	
+实际上,在开发中,我们更喜欢进行到开发容器中,自己手动使用`go build`来生成docker.
+
+可以通过上面的`docker-daemon`命令开启docker的开发容器. 参考`hack/make.sh binary`
+得到的命令行来使用`go build`在容器内部编译生成一个docker.
+
+	go build -o /go/bin/docker \
+	-a -tags 'netgo static_build apparmor selinux btrfs_noversion daemon' \
+	-installsuffix netgo \
+	-ldflags '-w -linkmode external -extldflags "-static -lpthread -Wl,--unresolved-symbols=ignore-in-object-files"' \
+	github.com/docker/docker/docker
+
+在开发容器内部,使用上面的命令就可以了.
+
+`-o`指定编译输出的地方,因为在容器内部`/go/bin`在`PATH`中,这样方便直接使用编译出来的docker.
+中间的选项比较复杂. `github.com/docker/docker/docker`指定要编译的package的路径,因为容器
+内部是设置了GOPATH的,所以直接docker在gopath中的路径.
 
 
