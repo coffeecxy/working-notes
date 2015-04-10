@@ -1,5 +1,5 @@
-cgroups
-=====
+# cgroups
+
 cgroups是Linux中用来进行资源管理的一种技术，最开始是google的工程师开发出来的，后来被merge到了Linuxkernel中，其是在2.6版本的kernel中merge的。而现在的发行版使用的kernel一般都是3.x的版本，所以一般都是使用了。
 
 在现在Linux中比较火的技术是docker，docker就十分依赖于cgroups。
@@ -52,7 +52,7 @@ cgroup分成两类，一个是transient的，也就是瞬时的，就是想要�
 使用systemd-run可以用来创建瞬时的cgroup
 
 	systemd-run --unit=name --scope --slice=slice_name command
-	
+
 --name表示service或者scope的名字，如果不给出来的话，那么系统就会生成一个名字，一般来说，我们都会给出一个有意义的名字
 
 --scope表示创建的进程要放到一个scope中而不是默认的service中去。一般我们都不会设置这个参数。

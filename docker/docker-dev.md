@@ -7,6 +7,7 @@ ubuntu 14.04中安装docker的方式.
 主要就是使用
 
 	wget -qO- https://get.docker.com/ | sh
+
 从docker的官网上面下载一个shell文件然后使用这个shell文件来安装docker,这样可以保证安装好的docker是现在的
 最新的版本.
 
@@ -51,7 +52,7 @@ docker的核心开发人员在开发docker的时候,使用了像编译器开发�
 
 	cd docker
 	make
-	
+
 这样会开始编译一个叫做`docker:master`的镜像. 会发现这样是不能成功的生成这个镜像的. 需要修改
 Dockerfile文件.
 
@@ -113,7 +114,7 @@ RUN echo "deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted
 
 	binary: build
 		$(DOCKER_RUN_DOCKER) hack/make.sh binary
-		
+
 	build: bundles
 		docker build -t "$(DOCKER_IMAGE)" .
 
@@ -122,12 +123,12 @@ binary依赖于build,再依赖于bundles.
 
 `$(DOCKER_RUN_DOCKER)`的值是
 
-	docker run --rm -it --privileged -e BUILDFLAGS -e DOCKER_CLIENTONLY -e DOCKER_EXECDRIVER -e DOCKER_GRAPHDRIVER -e TESTDIRS -e TESTFLAGS -e TIMEOUT -v "/home/cxy/code/docker/bundles:/go/src/github.com/docker/docker/bundles" "docker:master" 
+	docker run --rm -it --privileged -e BUILDFLAGS -e DOCKER_CLIENTONLY -e DOCKER_EXECDRIVER -e DOCKER_GRAPHDRIVER -e TESTDIRS -e TESTFLAGS -e TIMEOUT -v "/home/cxy/code/docker/bundles:/go/src/github.com/docker/docker/bundles" "docker:master"
 
 其意思为,在成功的编译好了`docker:master`这个镜像之后,要启动这个镜像,在其中运行
-	
+
 	hack/make.sh binary
-	
+
 要特别注意的是其中的`-v`选项,这儿只是将docker目录下的bundles给映射了. 因为编译生成的docker可执行文件
 会被放在docker/bundles这个文件夹下面.
 
@@ -144,7 +145,7 @@ binary依赖于build,再依赖于bundles.
 	alias docker-restart='docker restart docker-master'
 	# 从另外一个终端中进入容器
 	alias docker-shell='docker exec -it docker-master /bin/bash'
-	
+
 ## 在开发容器内容手动编译docker
 
 上面介绍的是在本地,通过目录下面的Makefile,使用make命令来在容器内编译得到一个docker可执行文件.
@@ -165,5 +166,10 @@ binary依赖于build,再依赖于bundles.
 `-o`指定编译输出的地方,因为在容器内部`/go/bin`在`PATH`中,这样方便直接使用编译出来的docker.
 中间的选项比较复杂. `github.com/docker/docker/docker`指定要编译的package的路径,因为容器
 内部是设置了GOPATH的,所以直接docker在gopath中的路径.
+
+
+
+
+
 
 
