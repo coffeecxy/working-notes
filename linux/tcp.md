@@ -1,5 +1,6 @@
 # tcp协议相关
 
+
 在当前使用的最多的TCP/IP协议栈中,传输层的TCP协议十分重要.
 
 ## 协议运行过程
@@ -47,7 +48,7 @@ client发起TCP连接的时候,会发送SYN包,如果这个SYN包发送不成功
 #### SYN_RECEIVED
 对于这个属性,可以有如下的配置属性
 
-	net.ipv4.tcp_synack_retries ： integer = 5
+    net.ipv4.tcp_synack_retries ： integer = 5
 
 默认值为`5`. 当sever接收到一个SYN包之后,其要发送ACK+SYN包回去,但是这个包可能发送不成功,
 那么server就需要不断的重发,这个属性就指定的重发的次数,5次对应着180s左右,如果重发次数用完

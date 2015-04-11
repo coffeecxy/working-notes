@@ -12,5 +12,9 @@
    * [iptables](linux/iptables.md)
    * [cgroups](linux/cgroups.md)
    * [systemd](linux/systemd.md)
-   * [nat](linux/nat.md)
+   * [以太网](linux/ethernet.md)
+   * [file-system](linux/file-system.md)
+* [ubuntu使用注意](ubuntu/README.md)
+   * [ubuntu常用软件安装](ubuntu/install.md)
+   * [ubuntu-java](ubuntu/ubuntu-java.md)
 

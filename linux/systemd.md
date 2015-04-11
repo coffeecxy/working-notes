@@ -1,11 +1,12 @@
 # systemd
 
+在以前的各种linux发行版中，基本都是使用`sysvinit`来作为系统的init程序。sysvinit是基于runlevel的一个init程序,这种策略在一起是没有问题的,但是现在系统越来越复杂,所以就有更加先进的init程序出现了.
 
-在以前的版本中，都是使用sysvinit来控制开启启动项，以及后面的对各种服务的管理。init的PID为1，也就是系统启动的第一个进程。
+ubuntu中,前几个版本使用的是upstart,这个init程序是基于事件的,其功能是比sysvinit更加强大的.在我使用的ubuntu 14.04中,还是使用的upstart.
 
-在ubuntu中，其使用了upstart，这是一个事件启动的init程序。
+fedora社区中的程序员开发出了一个比upstart更加适合于现代系统的init程序,其为systemd.在debian 7中,其已经使用systemd了,ubuntu社区经过讨论之后,决定在下一个lts版本,也就是16.04中才使用systemd,在14.04中仍然使用upstart.
 
-现在在red hat系列中，包括rhel,cnetos,fedora，都是使用的systemd，其是fedora的一个项目。
+所以,尽早的熟悉systemd的使用方法,可以在系统升级到16.04之后尽快的熟悉其init的使用.
 
 ## 基本概念
 ### systemd unit

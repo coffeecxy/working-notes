@@ -1,15 +1,13 @@
 # cgroups
 
-cgroups是Linux中用来进行资源管理的一种技术，最开始是google的工程师开发出来的，后来被merge到了Linuxkernel中，其是在2.6版本的kernel中merge的。而现在的发行版使用的kernel一般都是3.x的版本，所以一般都是使用了。
-
+cgroups是Linux中用来进行资源管理的一种技术，最开始是google的工程师开发出来的，后来被merge到了Linux kernel中，其是在2.6版本的kernel中merge的。而现在的发行版使用的kernel一般都是3.x的版本，所以一般都是使用了。
 在现在Linux中比较火的技术是docker，docker就十分依赖于cgroups。
 
 在cgroups之前，对于系统中的每一个进程，系统都是平等的对待的，也就是有些进程可以使用很多的系统资源。系统的资源管理是以进程作为基本单位的。
 
 ## cgroups介绍
 ### cgroups的层次结构
-在现在的发行版中，一般都是使用的systemd来作为系统的Init程序和对系统进行管理。
-cgroups也是受到systemd的管理的。
+在现在的发行版中，一般都是使用的systemd来作为系统的init程序和对系统进行管理.cgroups也是受到systemd的管理的.
 
 cgroups使用了一个层次结构来管理系统的资源
 
