@@ -4,7 +4,6 @@ hibernate
 
 ## 使用IDEA和MAVEN来新建hibernate工程
 
-
 ## 一个样列
 
 这个样例是一个评价的列子。
@@ -52,7 +51,7 @@ SQL代码
         name varchar(255),
         primary key (id)
     )
-	
+
 `Skill`也是一样的。
 
 ```java
@@ -92,23 +91,23 @@ create table Ranking (
 	primary key (id)
 )
 ```
-	
+
 上面是生成`Ranking`的各个域。其还需要一些FK的约束。
 
 ```sql
-alter table Ranking 
-    add constraint FK_j5b0b4anqw41odw0x6pxrbtr2 
-    foreign key (observer_id) 
+alter table Ranking
+    add constraint FK_j5b0b4anqw41odw0x6pxrbtr2
+    foreign key (observer_id)
     references Person (id)
 
-alter table Ranking 
-    add constraint FK_8fc03wy4pr9ntrnt8ncfthr6w 
-    foreign key (skill_id) 
+alter table Ranking
+    add constraint FK_8fc03wy4pr9ntrnt8ncfthr6w
+    foreign key (skill_id)
     references Skill (id)
 
-alter table Ranking 
-    add constraint FK_ffv5e9op8w3qx3jeqaqbdcsno 
-    foreign key (subject_id) 
+alter table Ranking
+    add constraint FK_ffv5e9op8w3qx3jeqaqbdcsno
+    foreign key (subject_id)
     references Person (id)
 ```
 从上面可以看出了，如果我们是自己手动写SQL代码，那么就不会使用后面的三个`alter table Ranking`语句，而是会在`create table Ranking`中就把外键的信息也一起写完了。
@@ -126,88 +125,88 @@ query.setString("name", "J. C. Smell");
 query.setString("skill", "Java");
 // 找出被评价的人是J. C. Smell，被评价的技能是Java的所有结果
 // 从上面插入数据库的东西可以知道，插入的三条记录都是评价J. C. Smell的
-```	
+```
 
-![](ranking.png)
+![](./hirernate/ranking.png)
 
 现在`Ranking`表中的数据如上。也就是查询的结果上三行都会被输出。
 注意上面使用的是HQL语言，是一种更适合于用户OO中的查询语言。
-	
-```sql	
+
+```sql
 === begin query ranking ===
-Hibernate: 
+Hibernate:
     select
         ranking0_.id as id1_1_,
         ranking0_.observer_id as observer3_1_,
         ranking0_.ranking as ranking2_1_,
         ranking0_.skill_id as skill_id4_1_,
-        ranking0_.subject_id as subject_5_1_ 
+        ranking0_.subject_id as subject_5_1_
     from #要得到完整的信息必须从三个表中提取
-        Ranking ranking0_ cross 
+        Ranking ranking0_ cross
     join
-        Person person1_ cross 
+        Person person1_ cross
     join
-        Skill skill2_ 
+        Skill skill2_
     where
         ranking0_.subject_id=person1_.id  #这两个是保证选出的数据是有意义的
         and ranking0_.skill_id=skill2_.id
         and person1_.name=? #这两个是查询的时候给出的参数 "J. C. Smell"
         and skill2_.name=? #"Java"
-				
+
 #执行完了之后，observer_id skill_id subject_id都需要找到其真实的值
 #从结果可以看出来，subject_id只有一个,需要一次查询才可以得到其值
 #skill_id也只有一个
 # observer_id有三个不同的
-				
-查询subject_id 只有一个				
-Hibernate: 
+
+查询subject_id 只有一个
+Hibernate:
     select
         person0_.id as id1_0_0_,
-        person0_.name as name2_0_0_ 
+        person0_.name as name2_0_0_
     from
-        Person person0_ 
+        Person person0_
     where
         person0_.id=?
-				
-查询skill_id 只有一个				
-Hibernate: 
+
+查询skill_id 只有一个
+Hibernate:
     select
         skill0_.id as id1_2_0_,
-        skill0_.name as name2_2_0_ 
+        skill0_.name as name2_2_0_
     from
-        Skill skill0_ 
+        Skill skill0_
     where
         skill0_.id=?
-				
-查询observer_id，有三个				
-Hibernate: 
+
+查询observer_id，有三个
+Hibernate:
     select
         person0_.id as id1_0_0_,
-        person0_.name as name2_0_0_ 
+        person0_.name as name2_0_0_
     from
-        Person person0_ 
-    where
-        person0_.id=?		
-Hibernate: 
-    select
-        person0_.id as id1_0_0_,
-        person0_.name as name2_0_0_ 
-    from
-        Person person0_ 
+        Person person0_
     where
         person0_.id=?
-Hibernate: 
+Hibernate:
     select
         person0_.id as id1_0_0_,
-        person0_.name as name2_0_0_ 
+        person0_.name as name2_0_0_
     from
-        Person person0_ 
+        Person person0_
+    where
+        person0_.id=?
+Hibernate:
+    select
+        person0_.id as id1_0_0_,
+        person0_.name as name2_0_0_
+    from
+        Person person0_
     where
         person0_.id=?
 === end query ranking ===
 ```
 
- 
+
 对这个语句的调用，会发现实际上会出现5句SQL代码。
 
 * 因为要得到所有的信息，所以需要综合三个表，这个生成的SQL代码使用`cross join`，在mysql中，其就是`inner join`，注意这儿使用的是`where`来得到有意义的数据，而不是使用的`join`的`on/using`。注意到语句中有很多的`?`，实际上这些`?`会被替换的。 对于得到的结果，因为`subject_id`,`observer_id`,`skill_id`都是需要被解析出。
@@ -227,7 +226,7 @@ Hibernate:
 ### 一个object可以处于的状态
 对于那些要被持久化到数据库中的object，就是java中的各种实例。其可以处于各种状态。主要下面的这些状态都是相对于其当前所处于的session的。
 
-* transient,暂时态。当一个object才被java创建，其id整个域还没有值，同时数据库完全不知道有这个实例的时候，其就处于transient态。 hibernate不会管理transient态的object。 
+* transient,暂时态。当一个object才被java创建，其id整个域还没有值，同时数据库完全不知道有这个实例的时候，其就处于transient态。 hibernate不会管理transient态的object。
 * persistent，持续态。当将一个暂时态的object使用`save()`的时候，其就会被成持续态了，或者是当我们从数据库中query,load出来一个object，它也是处于持续态的。处于持续态的object的改变会写进数据库，也就是其保存在内存中的值和数据库这个object对应的行中的值是同步的。
 * detached，分离态。对于一个处于持续态的object，如果其处于的session被close了，那么其就处于分离态。处于分离态的Object，在内存和数据库中都有，但是内存中的数据不会同步到数据库中了。对于一个detached的object，可以在另外一个session中调用load, refresh, merge, update() , or save()这些函数，这样其就又变成是这个新的session的持续态的object了。
 * removed，删除态。 当一个object被使用session.delete(object)后，那么其就处于删除态了，表示数据库中这个object对应的行在这个transaction被commit之后就会不存在了。 删除态的object也是在hibernate的管理之下的。
@@ -387,7 +386,7 @@ get是类似的，不过如果其不存在，那么只会返回一个Null，而�
 
 
 ### merge,reflesh
-对一个处于detached状态的object，在一个新的session中，使用merge，其会变成一个persistent的实例，反应到数据库上，这个object的`id`对应的数据库中的那一行的值会被更新到和这个object的状态一样。  
+对一个处于detached状态的object，在一个新的session中，使用merge，其会变成一个persistent的实例，反应到数据库上，这个object的`id`对应的数据库中的那一行的值会被更新到和这个object的状态一样。
 
 这个类似于我们在编辑一个U盘上面的文件的时候，U盘被拔出来了，然后我们会改变了编辑器中的内容，然后我们又将U盘插回去了，此时U盘中这个文件的内容和文件编辑器（内存）中文件的内容是不一样的了，然后我们选择保存，让文件编辑器中的内容完全的保存到U盘中。
 
@@ -462,7 +461,7 @@ public class ISBN implements Serializable {
     }
 
     //需要实现equals和hashCode
-	
+
 }
 ```
 比如ISBN，就需要上面的四个域来构成，这些域也需要getter和setter，需要特别注意的是，因为其要用来做主键，而主键要保证唯一性和不可以为Null的性质。
@@ -539,7 +538,7 @@ DELETE
  [WHERE logicalExpression]
 ```
 delete用来删除一个entity，其中的`where`也还是用来限制要删除的entity应该满足的条件。
-```java		
+```java
 Query query=session.createQuery("delete from Person where accountstatus=:status");
 query.setString("status", "purged");
 int rowsDeleted=query.executeUpdate();
@@ -561,7 +560,7 @@ select就使用数据库中得到一些满足条件的Entity。
 	 GROUP BY property [, ...]
 	 HAVING logicalExpression
 	 ORDER BY property [ASC | DESC] [, ...]
-	
+
 要注意的是，在select语句中,`select`这个关键字都是可以省略的，以为`select`是用得最多的语句，所以其才这样设计。
 后面的几个语句和sql中的类似，都是用来限制选择出来的object要满足的条件，或者是排列选择出来的object。
 
@@ -574,5 +573,5 @@ select就使用数据库中得到一些满足条件的Entity。
     Query query = session.createQuery("from Product p ");
     query.setFirstResult(1);
     query.setMaxResults(2);
-	
+
 如果上的setFirstResult和setMaxResults的组合就是`limit 1,2`

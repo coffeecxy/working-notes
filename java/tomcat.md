@@ -20,7 +20,7 @@ tomcat notes
 在这些被安装的文件中，很重要的一个是
 
 	/etc/init.d/tomcat7
-	
+
 这个是systemv init系统中使用的启动服务的标准脚本。
 
 我们知道要让tomcat7正确的运行起来，我们需要设置`CATALINA_HOME`,`CATALINA_BASE`这个两个环境变量，
@@ -33,7 +33,7 @@ tomcat notes
 
 如上，CATALINA_HOME路径下会有bin和lib来那个文件夹，其表示的tomcat的可执行文件所在的地方。
 
-![](base.png)
+![tomcat base](tomcat/base.png)
 
 如上，CATALINA_BASE路径下会好多个其他的文件夹，其中conf和webapps是我们平时关心的比较多个。
 注意到后面的三个路径是链接,它们链接到的路径如下
@@ -71,7 +71,7 @@ ROOT这个context和其他的又不一样，在访问的时候，其不需要在
 
 	<?xml version="1.0" encoding="UTF-8"?>
 	<Context path="" docBase="E:\spring\usemvc\target\usemvc" />
-	
+
 其中的内容为，这儿最重要的是其将docBase指向了我们正在开发的工程。
 
 >这个地方的具体的关系学习了tomcat的文档就可以知道了。
@@ -95,11 +95,11 @@ ROOT这个context和其他的又不一样，在访问的时候，其不需要在
 编辑/etc/default/tomcat7这个文件
 
 	nano /etc/default/tomcat7
-	
+
 添加如下的一行
 
 	AUTHBIND=yes
-	
+
 也可以把AUTHBIND的值改为yes然后解除注释。
 
 然后修改`$CATALINA_BASE/conf/server.xml`文件
@@ -109,12 +109,12 @@ ROOT这个context和其他的又不一样，在访问的时候，其不需要在
                URIEncoding="UTF-8"
                redirectPort="8443" />
 将上面的内容改为
-		
+
     <Connector port="80" protocol="HTTP/1.1"
                connectionTimeout="20000"
                URIEncoding="UTF-8"
                redirectPort="443" />
-			
+
 上面的443端口是给https使用的，如果没有使用https，那么可以不使用。
 
 这样做了之后再重启tomcat就可以了。
