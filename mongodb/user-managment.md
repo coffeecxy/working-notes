@@ -2,12 +2,12 @@
 ========
 和sql中一样，mongodb中也有用户的概念，但是两者是不太相同的。
 
-在sql中，user是一个顶级的概念，也就是说，在我们要操作数据库之前，我们就必须先以某个用户登陆进入，不然是连接不上数据库的。同时，每个用户都有自己的权限，这些权限包括对所有数据库的可见，可读，可写之类的操作能否执行。
+在sql中，user是一个顶级的概念，也就是说，在我们要操作数据库之前，我们就必须先以某个用户登陆进入，不然是连接不上数据库的。
+同时，每个用户都有自己的权限，这些权限包括对所有数据库的可见，可读，可写之类的操作能否执行。
 
 也就是说，在sql中，用户以及其操作权限是最开始就要求了的。
 
 但是在mongodb中，我们发现其默认是不需要使用用户登陆的，而且其用户是关联到某一个database上面的（当然可以给它其他database的权限），而不是将用户作为一等公民，在连接的时候就需要提供。
-
 
 ### 添加用户
 
@@ -39,7 +39,7 @@
 `admin`这个database是一个特殊的database，其是用来管理所有的用户的权限的一个database，这个和SQL中的那几个系统自带的database的意思是一样的（就是user,password那几个database）。
 
 ### 删除用户
-`db.dropUser(username, writeConcern)`
+	db.dropUser(username, writeConcern)
 
 同样的，要删除用户之前，要先选择到一个database。
 
@@ -50,7 +50,7 @@ username是一个string，表示要删除的用户。
 这样就删除了accountAdmin01@products这个用户。
 
 ### 删除所有用户
-`db.dropAllUsers(writeConcern)`
+	db.dropAllUsers(writeConcern)
 
 上面的语句删除了该db上的一个特定用户，而dropAllUsers可以删除其上的所有用户。
 

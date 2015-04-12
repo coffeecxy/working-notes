@@ -30,3 +30,7 @@ dbpath=E:\mongodb\data
 可以看到，其实这个服务也是调用了mongod.exe，不过是以`--service`的方式启动的。
 
 将其启动类型变成`自动`,那么系统启动的时候就可以启动了。
+
+需要注意的是，在运行上面的命令之前，先要创建`E:\mongodb\data`和`E:\mongodb\log`这两个文件夹，那么启动`mongod`的时候才能成功。
+
+在启动成功之后，就可以在`E:\mongodb\log\mongo.log`中看到其log信息。

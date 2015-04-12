@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.48.4 r9939"
+   width="300pt"
+   height="240pt"
+   sodipodi:docname="TCP_SYN.svg"
+   version="1.0"
+   inkscape:export-filename="/home/james/TCP_CLOSE.png"
+   inkscape:export-xdpi="84.269997"
+   inkscape:export-ydpi="84.269997">
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+        <dc:date>14 julio 2006</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Daniel Clemente Laboreo</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:language>es</dc:language>
+        <dc:relation>http://commons.wikimedia.org/wiki/Image:TCP_termination.png</dc:relation>
+        <dc:identifier>http://commons.wikimedia.org/wiki/Image:Fin_de_conexi%C3%B3n_TCP.svg</dc:identifier>
+        <dc:description>Intercambio de paquetes que se produce cuando un cliente quiere cerrar una conexión TCP a un servidor.</dc:description>
+        <cc:license
+           rdf:resource="http://www.gnu.org/copyleft/fdl.html" />
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Basado en http://commons.wikimedia.org/wiki/Image:TCP_termination.png (por: Nuno_Tavares)</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>tcp</rdf:li>
+            <rdf:li>cerrar</rdf:li>
+            <rdf:li>finalizar</rdf:li>
+            <rdf:li>terminar</rdf:li>
+            <rdf:li>conexión</rdf:li>
+            <rdf:li>fin</rdf:li>
+            <rdf:li>ack</rdf:li>
+            <rdf:li>cliente</rdf:li>
+            <rdf:li>servidor</rdf:li>
+            <rdf:li>paquetes</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs5">
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path2358"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         id="path2355"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(-0.8,-0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-7"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path2355-6"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(-0.8,-0.8)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="777"
+     inkscape:window-width="1213"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="2.0103948"
+     inkscape:cx="150.82493"
+     inkscape:cy="94.247186"
+     inkscape:window-x="2069"
+     inkscape:window-y="82"
+     inkscape:current-layer="svg2"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     showgrid="false"
+     inkscape:window-maximized="0" />
+  <path
+     style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.09843659px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 102.58119,50.877136 L 102.58119,287.34101"
+     id="path1308" />
+  <path
+     style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:1.09843659px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 270.70736,51.477306 L 270.70736,287.94116"
+     id="path1310" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.97014898px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+     d="m 101.95934,106.5249 158.16187,27.86872"
+     id="path1312"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.96899676px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart)"
+     d="M 112.97073,170.732 270.75712,142.86327"
+     id="path1316"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.86490315;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.86490315, 1.72980629;stroke-dashoffset:0"
+     d="m 275.93495,69.22778 0,64.0003"
+     id="path1324"
+     sodipodi:nodetypes="cc"
+     inkscape:connector-curvature="0" />
+  <text
+     xml:space="preserve"
+     style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+     x="61.589783"
+     y="36.501629"
+     id="text1316"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan1318"
+       x="61.589783"
+       y="36.501629"
+       style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans">Client</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+     x="242.22643"
+     y="30.369379"
+     id="text1320"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan1322"
+       x="242.22643"
+       y="30.369379"
+       style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Liberation Sans;-inkscape-font-specification:Liberation Sans">Server</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:18.00001907px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Mono;-inkscape-font-specification:Liberation Mono"
+     x="184.25993"
+     y="76.856651"
+     id="text1324"
+     sodipodi:linespacing="100%"
+     transform="matrix(0.98566488,0.16871498,-0.16871498,0.98566488,0,0)"><tspan
+       sodipodi:role="line"
+       id="tspan1326"
+       x="184.25993"
+       y="76.856651">SYN</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:17.99990845px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Mono;-inkscape-font-specification:Liberation Mono"
+     x="119.80974"
+     y="186.07997"
+     id="text1332"
+     sodipodi:linespacing="100%"
+     transform="matrix(0.98214738,-0.18811307,0.18811307,0.98214738,0,0)"><tspan
+       sodipodi:role="line"
+       id="tspan1334"
+       x="119.80974"
+       y="186.07997"
+       style="font-size:18px">ACK+SYN</tspan></text>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="HACK: puntas de las flechas" />
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Mono;-inkscape-font-specification:Sans Bold"
+     x="101.2969"
+     y="120.26836"
+     id="text3074"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3076"
+       x="101.2969"
+       y="120.26836">SYN_SENT</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Mono;-inkscape-font-specification:Sans Bold"
+     x="274.07379"
+     y="155.96701"
+     id="text3074-8"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3076-7"
+       x="274.07379"
+       y="155.96701">SYN_RECEIVED</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+     x="283.66479"
+     y="159.56279"
+     id="text1352-8"
+     sodipodi:linespacing="100%"><tspan
+       sodipodi:role="line"
+       x="283.66479"
+       y="159.56279"
+       id="tspan1358-4" /></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Mono;-inkscape-font-specification:Sans Bold"
+     x="100.3287"
+     y="200.05338"
+     id="text3074-3"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3076-1"
+       x="100.3287"
+       y="200.05338">ESTABLISHED</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Mono;-inkscape-font-specification:Sans Bold"
+     x="282.22629"
+     y="83.189087"
+     id="text3074-8-8-3"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3076-7-6-2"
+       x="282.22629"
+       y="83.189087">LISTEN</tspan></text>
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.97014898px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+     d="M 101.91324,184.71789 260.0751,212.5866"
+     id="path1312-6"
+     inkscape:connector-curvature="0" />
+  <text
+     xml:space="preserve"
+     style="font-size:17.99990845px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Mono;-inkscape-font-specification:Liberation Mono"
+     x="204.00598"
+     y="149.92984"
+     id="text1332-7"
+     sodipodi:linespacing="100%"
+     transform="matrix(0.97719667,0.21233622,-0.21233622,0.97719667,0,0)"><tspan
+       sodipodi:role="line"
+       id="tspan1334-5"
+       x="204.00598"
+       y="149.92984"
+       style="font-size:18px">ACK</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Mono;-inkscape-font-specification:Sans Bold"
+     x="353.37433"
+     y="231.78676"
+     id="text3074-3-1"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3076-1-4"
+       x="353.37433"
+       y="231.78676">ESTABLISHED</tspan></text>
+</svg>

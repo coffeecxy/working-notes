@@ -349,36 +349,6 @@ public class HelloController {
 
 
 
-### DispatcherServlet默认使用的HandlerMapping
-
-
-	org.springframework.web.servlet.HandlerMapping=org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,\
-	org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping
-	
-如上，在DispatcherServlet的配置文件中，其配置了使用`BeanNameUrlHandlerMapping`和`DefaultAnnotationHandlerMapping`两个`HandlerMapping`。
-如果我们不使用其他的`HandlerMapping`，那么所有的HandlerMapping都由这两个来完成。
-
-`BeanNameUrlHandlerMapping`映射URL的方式为如果bean name为`/aa*`的形式，也就是如果其name(id)属性为以`/`开头的，那么其就会被直接映射了。
-
-`DefaultAnnotationHandlerMapping`表示当我们在一个Controller的type或者是method上面使用了。
-
-当在同一个Controller上同时使用两个方法的时候(就是当@Controller里面给出了bean的name开头为`/`)，**一般都会出现问题**，所以不推荐这样使用。
-
-比较好的使用方法，不要使用`BeanNameUrlHandlerMapping`提供的功能，因为如果只是在controller的type上面使用`@Controller`，那么生成的bean的name就是将这个class的第一个字母变成小写的。
-
-	@Controller
-	@RequestMapping("/user")
-	public class UserController {
-	    @RequestMapping("/get")
-	    public User getUser() {
-	        return new User("cxy","cxy");
-	    }
-	}
-
-比如上的代码，会生成一个`userController`的bean，因为这个`bean name`没有以`/`开头，所以其不能映射到任何的URL。
-就只是用`DefaultAnnotationHandlerMapping`提供的功能，这样我们就需要在Controller的type和需要处理request的method上面使用`@RequestMapping`。
-
-在spring中，实际上实现了其他的`HandlerMapping`，但是一般情况下我们都不会使用，而是只会使用上面提到的两个。比如上面提到的`ControllerClassNameHandlerMapping`就一般不会使用。
 
 ## 2014年11月19日
 ### ModelMap & ModelAndView
@@ -419,4 +389,66 @@ public class DisplayShoppingCartController implements Controller {
 
 其相应的配置在文档中有。
 但是在实际的使用中，我还是喜欢自己指定view或者是view name,这样就不用去猜测和看文档来确定到底会使用哪个View。毕竟用的代码也没有几句。 
+
+
+## `DispatcherServlet`
+DispatcherServlet是spring.web中最重要的一个类，其本质是一个`servlet`，所以可以被放到一个servlet container中，比如说tomcat中。
+
+下面是DispatcherServlet的文档
+
+这个servlet使用相当的自由：重要安装了需要的类，那么其基本上可以满足任何的业务流程。其提供了如下的一些功能。
+
+* 使用javaBeans来作为配置的方式
+
+* 可以使用任何的HandlerMapping的实现 - 预先实现的或者由应用程序提供的 - 来控制将一个request路由到一个handler上面去。 默认使用的是BeanNameUrlHandlerMapping和DefaultAnnotationHandlerMapping，HandlerMapping的object可以以bean的方式定义在在servlet application content中，只要其实现了HandlerMapping接口。如果给出了一个指定的HandlerMapping,那么默认的就会被覆盖了。HandlerMappings可以使用任何的bean name,因为其被识别的时候是使用的其类型。 在下面的会介绍这两个默认的HandlerMapping。
+
+* 可以使用任何的HandlerAdapter;这样就可以使用任何的handler接口。默认使用的是`HttpRequestHandlerAdapter`,`SimpleControllerHandlerAdapter`,它们分别是用于`HttpRequestHandler`和`Controller`的，一个默认了的`AnnotationMethodHandlerAdapter`也会被使用。HandlerAdapter也可以使用bean的方法是被加入，如果加入了，那么默认的就会被覆盖了。
+
+* 这个分发器的异常处理可以使用HandlerExceptionResolver，比如将一个特定的异常映射到一个error page上面。默认使用的是`AnnotationMethodHandlerExceptionResolver`,`ResponseStatusExceptionResolver`,`DefaultHandlerExceptionResolver`。这个默认配置也可以被覆盖，只需要加入一个相应的bean就行了。
+
+* view resolution的策略可以使用ViewResolver的特定实现，其可以将一个view name resolve成一个view object。默认使用的是`InternalResourceViewResolver`，ViewResolver的默认配置也可以被覆盖。
+
+* 如果一个view或者是view name没有被显示的指出，那么RequestToViewNameTranslator会从一个request转换出一个view name。相应的bean name是viewNameTranslator，默认使用的是DefaultRequestToViewNameTranslator。
+
+* 分发器处理multipart request的是MultipartResolver的一个实现。对于Jakarta Commons FileUpload and Jason Hunter's COS都有实现，典型的会使用CommonsMultipartResolver，其bean name是multipartResolver，默认情况下没有使用。
+
+* 本地化的resolve使用的是LocaleResolver的一个实现
+
+> @RequestMapping只有在相应的HandlerMapping(用在class上面)和HandlerAdapter（用在method上）出现在了分发器中的时候才有用。如上面的描述，默认情况下这两个东西是存在的。但是如果使用了自定义的HandlerMappings或者是HandlerAdapters，默认的配置会被覆盖，所以如果还需要@RequestMapping能被使用，那么DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter要被例化为一个bean。
+
+> 一个web应用中可以有多个的DispatcherServlet。 每个servlet都会有自己的namespace，加载自己的application context，其中有自己的mapping,handdler等等。 如果使用了ContextLoaderListener来加载一个root application content，那么这个context会被共享，不然的话没有共享的context，所有的servlet的context都是独立的。
+
+
+
+
+### DispatcherServlet默认使用的HandlerMapping
+
+
+	org.springframework.web.servlet.HandlerMapping=org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,\
+	org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping
+	
+如上，在DispatcherServlet的配置文件中，其配置了使用`BeanNameUrlHandlerMapping`和`DefaultAnnotationHandlerMapping`两个`HandlerMapping`。
+如果我们不使用其他的`HandlerMapping`，那么所有的HandlerMapping都由这两个来完成。
+
+`BeanNameUrlHandlerMapping`映射URL的方式为如果bean name为`/aa*`的形式，也就是如果其name(id)属性为以`/`开头的，那么其就会被直接映射了。
+
+`DefaultAnnotationHandlerMapping`表示当我们在一个Controller的type或者是method上面使用了。
+
+当在同一个Controller上同时使用两个方法的时候(就是当@Controller里面给出了bean的name开头为`/`)，**一般都会出现问题**，所以不推荐这样使用。
+
+比较好的使用方法，不要使用`BeanNameUrlHandlerMapping`提供的功能，因为如果只是在controller的type上面使用`@Controller`，那么生成的bean的name就是将这个class的第一个字母变成小写的。
+
+	@Controller
+	@RequestMapping("/user")
+	public class UserController {
+	    @RequestMapping("/get")
+	    public User getUser() {
+	        return new User("cxy","cxy");
+	    }
+	}
+
+比如上的代码，会生成一个`userController`的bean，因为这个`bean name`没有以`/`开头，所以其不能映射到任何的URL。
+就只是用`DefaultAnnotationHandlerMapping`提供的功能，这样我们就需要在Controller的type和需要处理request的method上面使用`@RequestMapping`。
+
+在spring中，实际上实现了其他的`HandlerMapping`，但是一般情况下我们都不会使用，而是只会使用上面提到的两个。比如上面提到的`ControllerClassNameHandlerMapping`就一般不会使用。
 
