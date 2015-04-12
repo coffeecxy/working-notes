@@ -28,4 +28,33 @@ spring的一些配置
 ## 2014年11月19日12:31:23
 ### `xxx-servlet.xml`和`@Configuration`
 Spring mvc需要配置。
-一般的，在servlet container提供的
+一般的，在servlet container提供的`web.xml`中，我们会定义一个`DispatcherServlet`的servlet,那么按照其名字就可以生成一个`xxx-servlet.xml`，这个文件用来配置Spring 的环境。
+
+对于spring的配置，在最开始的时候，只可以使用xml文件，但是在后面的版本，因为java中引入了annotation，而且有些人不喜欢使用xml来配置，所以现在也有基于annotation来配置了。
+
+比较常见的是同时使用xml文件和java code结合起来配置Spring。
+
+如果要使用Java代码来配置spring，那么和spring的bean一眼，需要一个POJO的Java class.
+其要使用`@Configuration` annotation，表明其实用来配置spring的，
+同时还需要`@EnableWebMvc`，表明其会配置spring mvc。
+```
+@Configuration
+@EnableWebMvc
+public class WebConfig extends WebMvcConfigurerAdapter{
+
+}
+```
+还要注意的是其extends了`WebMvcConfigurerAdapter`，这样是为了方便编码。
+
+要注意的是，`@Configuration`的meta-annotation中有`@Component`，表示其也是一个bean，所以要让其起作用，那么需要在`xxx-servlet.xml`中添加。
+
+
+	<context:component-scan base-package="com.springapp.mvc"/>
+
+当然，这句话一般IDE会直接生成。
+
+如果是用xml配置，那么等价的就是
+
+	<mvc:annotation-driven />
+	
+虽然这样看起来要简单一些，但是真正要配置MVC的时候，会发现使用Java代码更加直观。
