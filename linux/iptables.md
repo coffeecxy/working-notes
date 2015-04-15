@@ -1,5 +1,7 @@
 # 使用iptables进行防火墙和nat的管理
 
+## iptables介绍
+
 linux中使用netfilter来进行对在linux主机上面流通的数据包进行过滤和处理的功能,nettfilter是内核的内建功能,对外linux提供了iptables这个命令来进行管理.
 
 iptables使用基于chain的方式来对在系统中流通的网络包进行处理.这些chain被放在不同的table中,系统默认的给出了几个table,这些table中有些默认的chain.默认的table有filter,nat,mangle,每个table中包含几个chain,
@@ -153,9 +155,6 @@ iptable一般就是控制三种包的流向.分别是途中的A,B,C表示的流�
 
 表示从192.168.1.100/24这个网段过来的,源端口是1024-65534,目的端口是ssh(22)的包都会被丢弃,这样这个网段
 的主机就不能ssh登录了.
-
-
-
 
 ### 根据包的状态来对包进行管理
 
