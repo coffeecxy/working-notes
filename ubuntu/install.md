@@ -48,7 +48,10 @@ ubuntu安装之后,其中的字体,特别是中文字体是很少的,因为我�
 在ubuntu的字体目录下新建win7目录,然后将win7下面的所有的字体文件都复制到ubuntu的相应目录下.
 
     cd /usr/share/font/win7
+    sudo chmod 644 *
     sudo mkfontscale && sudo mkfontdir && sudo fc-cache -fv
+
+要特别注意的是,要将这些字体的属性改为644,这样其他的用户才可以正确的读取到这个字体,也就是使用这个字体,不然会出现问题.
 
 mkfontsacle和mkfontdir会win7目录下面建立索引文件,这样在应用要搜索字体的时候,速度会快了很多.fc-cache命令会对当前系统中安装的所有字体文件做一个cache,这样其他的应用就知道有这些字体可以使用了.
 
@@ -135,4 +138,37 @@ clion需要使用jre来运行,官方提供的clion包中,自己是包含了一�
 
 安装完成之后再重启,一般就可以了.
 
+## 安装adobe pdf reader
+对于pdf阅读器,在windows下面有很多很好的,ubuntu的各个发行版也都有自己的默认的pdf阅读器,但是大部分功能都是比较差的.
 
+[这个blog](http://ubuntuhandbook.org/index.php/2014/04/install-adobe-reader-ubuntu-1404/)中给出在64位的14.04中安装adobe pdf reader的方法.
+
+1. 下载pdf reader的deb包.
+2. 使用gdebi来安装这文件.会发现要安装很多的依赖,因为这是一个32位的程序,所以所有32位的基本的包都会被安装. 安装完成之后会发现还是启动不了,还需要安装以下的包.
+
+
+    sudo apt-get install libgtk2.0-0:i386 libnss3-1d:i386 libnspr4-0d:i386 lib32nss-mdns* libxml2:i386 libxslt1.1:i386 libstdc++6:i386
+完成之后就可以成功启动pdf reader了.
+
+## 使用zsh而不是bash
+ubuntu默认使用的shell是bash. bash是一个用得比较多的shell,但是用起来并不舒服.
+
+现在大家使用得非常多的一个shell是zsh. 在加上oh-my-zsh提供的一堆的theme和plugin. zsh用起来就十分舒服了.
+
+首先,安装zsh.
+
+    sudo apt-get install zsh
+
+oh-my-zsh的主页[github上](https://github.com/robbyrussell/oh-my-zsh),其安装的过程也是十分的简单.
+
+    wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sh
+
+安装完成之后使用
+
+    chsh
+在提示输入了密码之后输入`/bin/zsh`,然后注销再重新登录,就会使用`zsh`作为login shell了.
+
+在`$HOME`下面有一个.zshrc文件.oh-my-zsh已经往里面写了一些东西了. 我修改了其中的两个内容,一个是开启了自己要使用的plugin,然后修改了一下使用的主题.
+
+    plugins=(git git-flow  github)
+    ZSH_THEME="dstufft"
