@@ -1,5 +1,5 @@
-java 8的知识
-====
+# java 8的知识
+
 
 Java语言是一门很成熟的语言，其语言本身的更新速度是很慢的，当然相对于C/C++这种用标准规定的语言来说，其更新速度还是快一点。
 所以很多在其他语言中出现了的语法在Java中都会出现得很慢。
@@ -15,7 +15,7 @@ Java 8在语言本身的更新上来说，其**终于**有了lambda函数是其�
 ```
 package java.awt.event;
 import java.util.EventListener;
-public interface ActionListener extends EventListener { 
+public interface ActionListener extends EventListener {
 	public void actionPerformed(ActionEvent e);
 }
 ```
@@ -24,7 +24,7 @@ public interface ActionListener extends EventListener {
 ```JAVA
 JButton testButton = new JButton("Test Button");
 testButton.addActionListener(new ActionListener(){
-	@Override 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 	    System.out.println("Click Detected by Anon Class");
 	  }
