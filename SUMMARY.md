@@ -52,6 +52,7 @@
    * [pthread](de1-soc/pthread.md)
        * [attr](de1-soc/attr.md)
    * [socket](de1-soc/socket.md)
+   * [msgpack的安装-从源代码安装库](de1-soc/msgpack.md)
 * [haskell](haskell/README.md)
    * [install-ubuntu](haskell/install-ubuntu.md)
 * [man-translate](man-translate/README.md)
