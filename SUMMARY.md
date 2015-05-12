@@ -14,6 +14,7 @@
    * [systemd](linux/systemd.md)
    * [以太网](linux/ethernet.md)
    * [file-system](linux/file-system.md)
+   * [mis](linux/mis.md)
 * [ubuntu使用注意](ubuntu/README.md)
    * [ubuntu常用软件安装](ubuntu/install.md)
    * [ubuntu-java](ubuntu/ubuntu-java.md)
@@ -27,4 +28,10 @@
    * [java8](java/java8.md)
    * [tomcat](java/tomcat.md)
    * [hibernate](java/hibernate.md)
+* [de1-soc](de1-soc/README.md)
+   * [使用sftp来传输数据](de1-soc/sftp.md)
+   * [sysvinit](de1-soc/init.md)
+   * [pthread](de1-soc/pthread.md)
+       * [attr](de1-soc/attr.md)
+   * [socket](de1-soc/socket.md)
 
